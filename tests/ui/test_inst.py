@@ -1,33 +1,26 @@
 import pytest
-
 from pages.action_layers.instagram_profile import ProfileInstAction
-from pages.page_objects.instagram_login import LoginInstPage
 from pages.action_layers.instagram_login import LoginInstAction
-from pages.page_objects.instagram_profile import ProfileInstPage
-# from pages.action_layers.instagram_login import do_login
-
 
 # insert you email here
-LOGIN = 'kek'
+LOGIN = 'wowvlad7'
 
 # insert you password here
-PASSWORD = 'kek'
+PASSWORD = 'pentium15'
 SEARCH = 'emiliasoko.love'
-
-
-def test_like(inst):
-    LoginInstPage(inst).open().do_login(LOGIN, PASSWORD)
-    profile = ProfileInstPage(inst)
-    profile.do_search(SEARCH)
-    profile.likes()
-
-    assert profile.is_like_exist()
-    profile.unlike()
-    assert profile.is_unlike_exist()
+QUANTITY_LIKES = 3
 
 
 def test_login(inst_app):
     LoginInstAction(inst_app).open().do_login(LOGIN, PASSWORD)
     ProfileInstAction(inst_app).check_exist_home_button()
+
+
+def test_like(inst_app):
+    LoginInstAction(inst_app).open().do_login(LOGIN, PASSWORD)
+    profile = ProfileInstAction(inst_app)
+    profile.do_search(SEARCH)
+    profile.do_likes(QUANTITY_LIKES)
+
 
 

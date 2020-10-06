@@ -79,4 +79,8 @@ class BasePage(WaitElements):
             return False
         return True
 
+    def click_exist_element(self, element: Locator):
+        if self.is_element_exist(element):
+            self.click(element)
+
 

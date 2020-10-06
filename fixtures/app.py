@@ -3,7 +3,7 @@ from tools.web import select_browser
 from tools.web.app import App
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def inst_app(driver, cfg):
     app = App(driver, cfg["web"]["url"])
     yield app
