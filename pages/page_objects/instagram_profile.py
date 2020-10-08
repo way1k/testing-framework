@@ -17,16 +17,6 @@ class ProfileInstPage(BasePage):
     UNLIKE = Locator(css='svg[aria-label="Не нравится"]')
     RIGHT_ARROW = Locator(css='a.coreSpriteRightPaginationArrow')
 
-    # @allure.step('Поиск пользователя')
-    # def do_search(self, search):
-    #     if self.is_element_exist(self.SAVE_DATA_POPUP):
-    #         self.click(self.SAVE_DATA_POPUP)
-    #     if self.is_element_exist(self.POPUP_BUTTON):
-    #         self.click(self.POPUP_BUTTON)
-    #     self.click(self.SEARCH_LAYER)
-    #     self.write(self.SEARCH, search)
-    #     self.click(self.FIRST_RESULT)
-
     def close_save_data_popup(self):
         self.click_exist_element(self.SAVE_DATA_POPUP)
 
@@ -42,56 +32,25 @@ class ProfileInstPage(BasePage):
     def select_first_result(self):
         self.click(self.FIRST_RESULT)
 
-
-    # @allure.step('Простановка лайков')
-    # def like(self):
-    #     self.click_first_picture()
-    #     self.click_like()
-
     def click_first_picture(self):
         self.click(self.FIRST_PICTURE)
 
     def click_like(self):
         self.click(self.LIKE)
 
-    # @allure.step('Проверка наличия лайка')
     def is_like_exist(self):
         self.is_element_exist(self.UNLIKE)
         return self
 
-
-    # @allure.step('Снятие лайка')
-    # def unlike(self):
-    #     self.click(self.UNLIKE)
-
     def click_unlike(self):
         self.click(self.UNLIKE)
 
-    # @allure.step('Проверка отсутсвия лайка')
     def is_unlike_exist(self):
         self.is_element_exist(self.LIKE)
         return self
 
     def click_right_arrow(self):
         self.click(self.RIGHT_ARROW)
-
-    # @allure.step('Простановка лайков')
-    # def likes(self):
-    #     self.click(self.FIRST_PICTURE)
-    #     i = 0
-    #     while i < 20:
-    #         self.click(self.LIKE)
-    #         self.is_like_exist()
-    #         self.click(self.UNLIKE)
-    #         self.is_unlike_exist()
-    #         if i == 18:
-    #             break
-    #         self.click(self.RIGHT_ARROW)
-    #         i += 1
-    #
-    #
-    #
-    #
 
     def is_home_button_exist(self):
         self.is_element_exist(self.HOME_BUTTON)

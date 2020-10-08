@@ -72,6 +72,7 @@ class BasePage(WaitElements):
         return self
 
     def is_element_exist(self, element: Locator):
+        """Check exist element"""
         try:
             self.wait_clickable(element)
             self.find(element)
@@ -80,6 +81,7 @@ class BasePage(WaitElements):
         return True
 
     def click_exist_element(self, element: Locator):
+        """Click element if exist"""
         if self.is_element_exist(element):
             self.click(element)
 

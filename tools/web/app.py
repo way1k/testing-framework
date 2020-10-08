@@ -8,6 +8,7 @@ class App:
     def __init__(self, driver, url, wait=5):
         self.driver = driver
         self.url = url
+        # self.driver.set_page_load_timeout(120)
         # self.wait = WebDriverWait(self.driver, wait).until
 
     def close(self):
