@@ -1,3 +1,3 @@
 # UI test framework
-_by Sokolov Vladislav_
+_Sokolov Vladislav_
 
