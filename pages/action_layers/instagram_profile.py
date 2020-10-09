@@ -20,8 +20,10 @@ class ProfileInstAction(ProfileInstPage):
     def do_likes(self, quantity_likes):
         self.click_first_picture()
         for _ in range(quantity_likes):
-            self.click_like()
+            if self.is_unlike_exist():
+                self.click_like()
             assert self.is_like_exist()
-            self.click_unlike()
+            if self.is_like_exist():
+                self.click_unlike()
             assert self.is_unlike_exist()
             self.click_right_arrow()

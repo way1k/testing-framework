@@ -20,6 +20,3 @@ def test_like(inst_app):
     profile = ProfileInstAction(inst_app)
     profile.do_search(SEARCH)
     profile.do_likes(QUANTITY_LIKES)
-
-
-
