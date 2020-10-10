@@ -13,8 +13,8 @@ class ProfileInstPage(BasePage):
     FIRST_RESULT = Locator(css='.fuqBx > a:first-child')
 
     FIRST_PICTURE = Locator(css='div.Nnq7C > div:first-child')
-    LIKE = Locator(css='svg[aria-label="Нравится"]:first-child')
-    UNLIKE = Locator(css='svg[aria-label="Не нравится"]')
+    LIKE = Locator(xpath='//*[local-name()="svg"][@aria-label="Нравится"]')
+    UNLIKE = Locator(xpath='//*[local-name()="svg"][@aria-label="Не нравится"]')
     RIGHT_ARROW = Locator(css='a.coreSpriteRightPaginationArrow')
 
     def close_save_data_popup(self):
@@ -39,14 +39,14 @@ class ProfileInstPage(BasePage):
         self.click(self.LIKE)
 
     def is_like_exist(self):
-        self.is_element_exist(self.UNLIKE)
+        self.is_element_exist(self.LIKE)
         return self
 
     def click_unlike(self):
         self.click(self.UNLIKE)
 
     def is_unlike_exist(self):
-        self.is_element_exist(self.LIKE)
+        self.is_element_exist(self.UNLIKE)
         return self
 
     def click_right_arrow(self):
@@ -55,3 +55,4 @@ class ProfileInstPage(BasePage):
     def is_home_button_exist(self):
         self.is_element_exist(self.HOME_BUTTON)
         return self
+

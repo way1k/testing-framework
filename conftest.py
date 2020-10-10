@@ -1,3 +1,4 @@
+import subprocess
 from fixtures.app import *
 from fixtures.common import *
 from settings import PROJECT_DIR

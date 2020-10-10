@@ -9,6 +9,7 @@ def inst_app(driver, cfg):
     yield app
     app.close()
 
+
 @pytest.fixture(scope="function")
 def driver(request, cfg):
     browser_type = request.config.getoption("--browser")
