@@ -21,10 +21,10 @@ def pytest_addoption(parser):
     )
 
     parser.addoption(
-        "--allure",
+        "--allure_gen",
         action="store",
         help="Allure generate results",
-        default="False",
+        default=True,
     )
 
     parser.addoption(
@@ -34,11 +34,11 @@ def pytest_addoption(parser):
         default=False,
     )
 
-
 @pytest.fixture(scope="session", autouse=True)
 def generate_report(pytestconfig):
-    if pytestconfig.getoption('allure') == "True":
+    if pytestconfig.getoption('allure_gen'):
         yield
         subprocess.Popen("allure serve ALLURE_RESULTS", shell=True, cwd=PROJECT_DIR)
-    elif pytestconfig.getoption('allure') == "False":
+    else:
+    # elif pytestconfig.getoption('allure') == False:
         yield print("Run tests without logs")
