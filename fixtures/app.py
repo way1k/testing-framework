@@ -27,24 +27,16 @@ def driver(request, cfg):
     is_remote = request.config.getoption("--remote")
     browser_type = request.config.getoption("--browser")
 
-    driver_instance = None
+    if is_remote:
+        hub_path = "http://selenium__standalone-chrome:4444/wd/hub"
+        browser = select_browser.remote(browser_type, hub_path)
+    else:
+        browser = select_browser.local(browser_type)
 
-    def get_driver(hub_path=None):
-        nonlocal driver_instance
-        if is_remote:
-            hub_path = hub_path or "http://selenium__standalone-chrome:4444/wd/hub"
-            driver = select_browser.remote(browser_type, hub_path)
-        else:
-            driver = select_browser.local(browser_type)
+    browser.set_window_position(2000, 0)
+    browser.maximize_window()
 
-        driver.set_window_position(2000, 0)
-        driver.maximize_window()
-
-        driver_instance = driver
-
-        return driver
-
-    yield get_driver
-    driver_instance.quit()
+    yield browser
+    browser.quit()
 
 

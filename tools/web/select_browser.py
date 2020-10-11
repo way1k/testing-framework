@@ -35,6 +35,7 @@ def local(browser):
 
 def remote(browser, path):
     """Returns remote driver instance"""
+
     if browser == BrowserTypes.CHROME:
         caps = DesiredCapabilities.CHROME
     elif browser == BrowserTypes.FIREFOX:
@@ -42,7 +43,8 @@ def remote(browser, path):
     else:
         raise ValueError(f"Unknown browser type: {browser}")
 
-    caps["acceptInsecureCerts"] = True
+    # caps["acceptInsecureCerts"] = True
+    driver = webdriver.Remote(command_executor=path, desired_capabilities=caps)
 
-    return webdriver.Remote(command_executor=path, desired_capabilities=caps)
+    return driver
            # webdriver.Remote(command_executor="http://selenium__standalone-chrome:4444/wd/hub")
