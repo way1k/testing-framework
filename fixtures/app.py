@@ -45,4 +45,6 @@ def driver(request, cfg):
         return driver
 
     yield get_driver
+    driver_instance.quit()
+
 
