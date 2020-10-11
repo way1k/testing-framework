@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -30,3 +31,18 @@ def local(browser):
     else:
         raise ValueError(f"Unknown browser type: {browser}")
     return driver
+
+
+def remote(browser, path):
+    """Returns remote driver instance"""
+    if browser == BrowserTypes.CHROME:
+        caps = DesiredCapabilities.CHROME
+    elif browser == BrowserTypes.FIREFOX:
+        caps = DesiredCapabilities.FIREFOX
+    else:
+        raise ValueError(f"Unknown browser type: {browser}")
+
+    caps["acceptInsecureCerts"] = True
+
+    return webdriver.Remote(command_executor=path, desired_capabilities=caps)
+           # webdriver.Remote(command_executor="http://selenium__standalone-chrome:4444/wd/hub")

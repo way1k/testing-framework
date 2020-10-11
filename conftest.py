@@ -27,6 +27,13 @@ def pytest_addoption(parser):
         default="False",
     )
 
+    parser.addoption(
+        "--remote",
+        action="store_true",
+        help="Is driver session remote",
+        default=False,
+    )
+
 
 @pytest.fixture(scope="session", autouse=True)
 def generate_report(pytestconfig):
