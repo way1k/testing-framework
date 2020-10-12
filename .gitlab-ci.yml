@@ -12,7 +12,7 @@ stages:
 #  before_script:
 #    - pip install -r requirements.txt
 #  script:
-#    - pytest -n=4 --alluredir=../../ALLURE_RESULTS tests/ui
+#    - pytest -n=4 --alluredir=../../allure-results tests/ui
 #
 #  allow_failure: true
 #  artifacts:
@@ -30,12 +30,12 @@ chrome_job:
   before_script:
     - pip install -r requirements.txt
   script:
-    - pytest --alluredir=./ALLURE_RESULTS tests/ui/test_yandex_search.py --remote
+    - pytest --alluredir=./allure-results tests/ui/test_yandex_search.py --remote
   allow_failure: true
   artifacts:
     when: always
     paths:
-      - ./ALLURE_RESULTS
+      - ./allure-results
     expire_in: 1 day
 
 history_job:
@@ -48,11 +48,11 @@ history_job:
     - apk add unzip
     - unzip artifacts.zip
     - chmod -R 777 public
-    - cp -r ./public/history ./ALLURE_RESULTS
+    - cp -r ./allure-results ./public/history
   allow_failure: true
   artifacts:
     paths:
-      - ./ALLURE_RESULTS
+      - ./allure-results
     expire_in: 1 day
   rules:
     - when: always
@@ -63,10 +63,10 @@ allure_job:
     - docker
   image: frankescobar/allure-docker-service
   script:
-     - allure generate -c ./ALLURE_RESULTS -o ./allure-report
+     - allure generate -c ./allure-results -o ./allure-report
   artifacts:
     paths:
-      - ./ALLURE_RESULTS
+      - ./allure-results
       - ./allure-report
     expire_in: 1 day
   rules:
@@ -76,7 +76,7 @@ pages:
   stage: deploy
   script:
     - mkdir public
-    - mv ./ALLURE_RESULTS* public
+    - mv ./allure-results* public
   artifacts:
     paths:
       - public
