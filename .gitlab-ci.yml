@@ -23,7 +23,7 @@ stages:
 chrome_job:
   stage: testing
   services:
-    - selenium/standalone-chrome
+    - selenium/standalone-chrome:latest
   image: python:3.8
   tags:
     - docker

@@ -24,7 +24,7 @@ def pytest_addoption(parser):
         "--allure_gen",
         action="store",
         help="Allure generate results",
-        default=True,
+        default=False,
     )
 
     parser.addoption(
