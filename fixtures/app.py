@@ -10,6 +10,13 @@ def inst_app(driver, cfg):
     app.close()
 
 
+@pytest.fixture(scope="function")
+def yandex_app(driver, cfg):
+    app = App(driver, cfg["web"]["url"])
+    yield app
+    app.close()
+
+
 # @pytest.fixture(scope="function")
 # def driver(request, cfg):
 #     browser_type = request.config.getoption("--browser")

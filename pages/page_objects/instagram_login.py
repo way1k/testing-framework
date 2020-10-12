@@ -1,20 +1,3 @@
-# import allure
-# from pages.base_page import BasePage
-# from tools.web.locator import Locator
-#
-#
-# class LoginInstPage(BasePage):
-#     LOGIN = Locator(name='username')
-#     PASSWORD = Locator(name='password')
-#     BUTTON = Locator(css='button[type="submit"]')
-#
-#     @allure.step('Логин пользователя')
-#     def do_login(self, email, password):
-#         self.write(self.LOGIN, email)
-#         self.write(self.PASSWORD, password)
-#         self.click(self.BUTTON)
-
-
 from pages.base_page import BasePage
 from tools.web.locator import Locator
 

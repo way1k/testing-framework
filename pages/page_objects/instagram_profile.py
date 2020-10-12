@@ -1,4 +1,3 @@
-import allure
 from pages.base_page import BasePage
 from tools.web.locator import Locator
 

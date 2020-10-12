@@ -30,7 +30,7 @@ chrome_job:
   before_script:
     - pip install -r requirements.txt
   script:
-    - pytest --alluredir=./ALLURE_RESULTS tests/ui --remote
+    - pytest --alluredir=./ALLURE_RESULTS tests/ui/test_yandex_search.py --remote
   allow_failure: true
   artifacts:
     when: always

@@ -8,7 +8,7 @@ class ProfileInstAction(ProfileInstPage):
     def check_exist_home_button(self):
         assert self.is_home_button_exist(), "Home button is not exist, login is unsuccessful"
 
-    @allure.step('Search_user')
+    @allure.step('Search user')
     def do_search(self, search):
         self.close_save_data_popup()
         self.close_main_popup()
