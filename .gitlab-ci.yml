@@ -76,7 +76,7 @@ pages:
   stage: deploy
   script:
     - mkdir public
-    - mv ./allure-results* public
+    - mv ./allure-report/* public
   artifacts:
     paths:
       - public
