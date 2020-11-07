@@ -38,7 +38,7 @@ def pytest_addoption(parser):
 def generate_report(pytestconfig):
     if pytestconfig.getoption('allure_gen'):
         yield
-        subprocess.Popen("allure serve ALLURE_RESULTS", shell=True, cwd=PROJECT_DIR)
+        subprocess.Popen("allure serve allure-results", shell=True, cwd=PROJECT_DIR)
     else:
     # elif pytestconfig.getoption('allure') == False:
         yield print("Run tests without logs")

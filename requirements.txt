@@ -4,3 +4,4 @@ webdriver-manager==2.3.0
 allure-pytest==2.6.2
 requests==2.23.0
 pytest-xdist==2.1.0
+pytest-allure-adaptor==1.7.10
