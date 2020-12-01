@@ -35,8 +35,8 @@ class WaitElements:
 
 class BasePage(WaitElements):
     """Base Web page object"""
-    # def __init__(self, app):
-    #     self.app = app
+    def __init__(self, app):
+        self.app = app
 
     def find(self, element: Locator):
         """Find element by locator"""

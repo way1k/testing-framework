@@ -10,7 +10,7 @@ def pytest_addoption(parser):
         "--config",
         action="store",
         help="Test stand number",
-        default="config_test_yandex"
+        default="config_test_instagram"
     )
 
     parser.addoption(
