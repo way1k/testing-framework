@@ -4,4 +4,6 @@
 .idea/test_framework.iml
 .idea/vcs.xml
 .idea/inspectionProfiles/profiles_settings.xml
+.idea/
+.idea
 __pycache__/
