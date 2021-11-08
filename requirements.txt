@@ -2,10 +2,13 @@
 pytest==6.2.5
 selenium==3.141.0
 # webdriver-manager==2.3.0
-webdriver-manager==3.4.2
-# allure-pytest==2.6.2
-allure-pytest==2.9.43
-requests==2.23.0
+webdriver-manager==3.5.2
+allure-pytest==2.9.45
+# allure-pytest==2.9.43
+requests==2.26.0
 # pytest-xdist==2.1.0
-pytest-xdist==2.3.0
+pytest-xdist==2.4.0
+pytest-rerunfailures==10.2
 pytest-allure-adaptor==1.7.10
+pymongo==3.12.1
+PyMySQL==1.0.2
