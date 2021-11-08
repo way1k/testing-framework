@@ -12,3 +12,4 @@ venv.bak/
 
 # Local config file
 /pytest.ini
+pytest.ini
