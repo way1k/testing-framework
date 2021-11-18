@@ -2,6 +2,9 @@
 markers =
     api: Mark test to run only API tests
     ui: Mark test to run only UI tests
+    rashorg: Mark test to run only Bashorg platform tests
+    beqres: Mark test to run only Reqres platform tests
+
 addopts =
     -p no:warnings
     --color=yes
