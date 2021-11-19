@@ -14,7 +14,7 @@ TEST_TXT_FILE = os.path.join(PROJECT_DIR, "files/etc/text_file.txt")
 
 ALLURE_REPORT = {
     "results_dir": ALLURE_FILES_DIR,
-    "url": "http://143.47.227.244:8081"
+    "url": "http://132.226.129.89:8081"
 }
 
 SELENOID_ENDPOINT = "http://143.47.227.244:4444/wd/hub"
