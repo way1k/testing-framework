@@ -62,7 +62,6 @@ build-image:
 #    - docker push git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME}
 
 
-
 ### Downstream stage jobs ###
 #
 #bashorg-test:
