@@ -15,6 +15,14 @@ def get_active_branch_name():
             return line.partition("refs/heads/")[2]
 
 
+def get_platform(config):
+    if config.getoption('browser') == 'local':
+        platform = f'local/chrome'
+    else:
+        platform = f'remote/{config.getoption("browser")}'
+    return platform
+
+
 def print_(text, *args, **kwargs):
     text_color = "\033[94m"
     end = '\033[0m'

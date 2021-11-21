@@ -1,84 +1,119 @@
+image: gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+
 stages:
-  - testing # Запуск тестов
-  - history_copy # Копирование результата тестов из предыдущего запуска тестов
-  - reports # Генерация отчета
-  - deploy # Публикация отчета на gitlab pages
+  - validate
+  - build
+  - downstream
 
-#docker_job:
-#  stage: testing
-#  tags:
-#    - docker
-#  image: python:3.8-alpine
-#  before_script:
-#    - pip install -r requirements.txt
-#  script:
-#    - pytest -n=4 --alluredir=../../allure-results tests/ui
-#
-#  allow_failure: true
-#  artifacts:
-#    when: always
-#    paths:
-#      - ../../ALLURE_RESULTS
-#    expire_in: 1 day
-chrome_job:
-  stage: testing
-  services:
-    - selenium/standalone-chrome:latest
-  image: python:3.8
+### Jobs ###
+
+### Validate stage jobs ###
+
+validate-requirements:
+  stage: validate
   tags:
     - docker
-  before_script:
+  image: python:3.8.12-buster
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - requirements.txt
+      when: always
+  script:
     - pip install -r requirements.txt
-  script:
-    - pytest --alluredir=./allure-results tests/ui/test_yandex_search.py --remote
-  allow_failure: true
-  artifacts:
-    when: always
-    paths:
-      - ./allure-results
-    expire_in: 1 day
+    - echo "Зависимости совместимы"
 
-history_job:
-  stage: history_copy
+### Build stage jobs ###
+
+build-image:
+  stage: build
+  image: docker:20.10.7
   tags:
     - docker
-  image: storytel/alpine-bash-curl
-  script:
-    - 'curl --location --output artifacts.zip "https://gitlab.com/api/v4/projects/21710298/jobs/artifacts/master/download?job=pages&job_token=$CI_JOB_TOKEN"'
-    - apk add unzip
-    - unzip artifacts.zip
-    - chmod -R 777 public
-    - cp -r ./allure-results ./public/history
-  allow_failure: true
-  artifacts:
-    paths:
-      - ./allure-results
-    expire_in: 1 day
   rules:
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - requirements.txt
+        - Dockerfile
+        - pytest.ini.dist
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+  script:
+    - printenv
+    - ehho "============================================"
+    - echo $GITLAB_USER_LOGIN
+    - echo $CI_BUILD_TOKEN
+    - echo $CI_COMMIT_REF_NAME
+    - echo $GITLAB_USER_LOGIN
+    - ehho "============================================"
+    - ehho $CI_REGISTRY_USER
+    - ehho $CI_REGISTRY_PASSWORD
+    - ehho $CI_REGISTRY
+    - echo $CI_COMMIT_REF_NAME
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
+    - docker push $CI_REGISTRY/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+#    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN git.fabrikant.ru:4567
+#    - docker build -t git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME} .
+#    - docker push git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME}
 
-allure_job:
-  stage: reports
-  tags:
-    - docker
-  image: frankescobar/allure-docker-service
-  script:
-     - allure generate -c ./allure-results -o ./allure-report
-  artifacts:
-    paths:
-      - ./allure-results
-      - ./allure-report
-    expire_in: 1 day
-  rules:
-    - when: always
 
-pages:
-  stage: deploy
-  script:
-    - mkdir public
-    - mv ./allure-report/* public
-  artifacts:
-    paths:
-      - public
+### Downstream stage jobs ###
+
+bashorg-test:
+  stage: downstream
   rules:
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+      variables:
+        ALLURE_FABR_URL: $ALLURE_FABR_URL
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '$ALLURE_START_PROD'
+      when: never
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && ($MARK_NAMES != null || $MARK_NAMES != "" || $TEMPLATE != null) && ($ALLURE_FABR_URL != null || $ALLURE_FABR_URL != "") && ($ALLURE_NEP_URL == null || $ALLURE_NEP_URL == "")'
+      variables:
+        ALLURE_FABR_URL: $ALLURE_FABR_URL
+        ALLURE_JOB_RUN_ID: $ALLURE_JOB_RUN_ID
+      when: always
+  variables:
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    MARK_NAMES: $MARK_NAMES
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    SCHEDULER: $SCHEDULER
+  trigger:
+    include:
+      - local: config/pipelines/.bashorg-test-ci.yml
+
+reqres-test:
+  stage: downstream
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER =~ /^reqres-test.*/'
+      variables:
+        ALLURE_NEP_URL: $ALLURE_NEP_URL
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger")'
+      variables:
+        ALLURE_JOB_RUN_ID: $ALLURE_JOB_RUN_ID
+        ALLURE_NEP_URL: $ALLURE_NEP_URL
+        ALLURE_NEP_ECP: $ALLURE_NEP_ECP
+      when: always
+  variables:
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    MARK_NAMES: $MARK_NAMES
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    SCHEDULER: $SCHEDULER
+  trigger:
+    include:
+      - local: config/pipelines/.reqres-test-ci.yml

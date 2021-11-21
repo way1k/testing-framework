@@ -2,7 +2,7 @@ import getpass
 import os
 import pytest
 from plugins.reporter import api, utils
-from plugins.reporter.utils import get_active_branch_name
+from plugins.reporter.utils import get_active_branch_name, get_platform
 from settings import ALLURE_REPORT, LOCAL_FILES_DIR
 
 
@@ -41,6 +41,9 @@ def pytest_sessionfinish(session):
 
         branch_name = get_active_branch_name()
         path += f"/{branch_name}"
+
+        platform_name = get_platform(session.config)
+        path = f"{platform_name}/" + path
 
         rep_num = client.get_build_num(path)
         path += f"/{rep_num}"
