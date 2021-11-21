@@ -50,10 +50,10 @@ build-image:
     - echo ${CI_BUILD_TOKEN}
     - echo ${CI_COMMIT_REF_NAME}
     - echo ${GITLAB_USER_LOGIN}
-    - ehho "============================================"
-    - ehho ${CI_REGISTRY_USER}
-    - ehho ${CI_REGISTRY_PASSWORD}
-    - ehho ${CI_REGISTRY}
+    - echo "============================================"
+    - echo ${CI_REGISTRY_USER}
+    - echo ${CI_REGISTRY_PASSWORD}
+    - echo ${CI_REGISTRY}
     - echo ${CI_COMMIT_REF_NAME}
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
