@@ -45,7 +45,7 @@ build-image:
       when: always
   script:
     - printenv
-    - eсho "============================================"
+#    - eсho "============================================"
     - echo ${GITLAB_USER_LOGIN}
     - echo ${CI_BUILD_TOKEN}
     - echo ${CI_COMMIT_REF_NAME}
