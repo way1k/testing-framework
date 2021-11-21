@@ -1,4 +1,4 @@
-#image: gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+#image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
 
 stages:
   - validate
@@ -18,8 +18,8 @@ validate-requirements:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - requirements.txt
+#      changes:
+#        - requirements.txt
       when: always
   script:
     - pip install -r requirements.txt
@@ -36,28 +36,28 @@ build-image:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - requirements.txt
-        - Dockerfile
-        - pytest.ini.dist
+#      changes:
+#        - requirements.txt
+#        - Dockerfile
+#        - pytest.ini.dist
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
   script:
     - printenv
     - ehho "============================================"
-    - echo $GITLAB_USER_LOGIN
-    - echo $CI_BUILD_TOKEN
-    - echo $CI_COMMIT_REF_NAME
-    - echo $GITLAB_USER_LOGIN
+    - echo ${GITLAB_USER_LOGIN}
+    - echo ${CI_BUILD_TOKEN}
+    - echo ${CI_COMMIT_REF_NAME}
+    - echo ${GITLAB_USER_LOGIN}
     - ehho "============================================"
-    - ehho $CI_REGISTRY_USER
-    - ehho $CI_REGISTRY_PASSWORD
-    - ehho $CI_REGISTRY
-    - echo $CI_COMMIT_REF_NAME
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
-    - docker push $CI_REGISTRY/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+    - ehho ${CI_REGISTRY_USER}
+    - ehho ${CI_REGISTRY_PASSWORD}
+    - ehho ${CI_REGISTRY}
+    - echo ${CI_COMMIT_REF_NAME}
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
+    - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
 #    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN git.fabrikant.ru:4567
 #    - docker build -t git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME} .
 #    - docker push git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME}
