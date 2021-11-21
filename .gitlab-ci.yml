@@ -12,7 +12,7 @@ stages:
 validate-requirements:
   stage: validate
   tags:
-    - docker
+    - common-255
   image: python:3.8.12-buster
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
@@ -31,7 +31,7 @@ build-image:
   stage: build
   image: docker:20.10.7
   tags:
-    - docker
+    - common-255
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
       when: never
