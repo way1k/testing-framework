@@ -1,0 +1,63 @@
+image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+
+stages:
+  - test
+
+### Job templates ###
+
+### Test stage templates ###
+
+.regular-runs-base:
+  stage: test
+  rules:
+    - if: '$SCHEDULER == "bashorg-test" && $MARK_NAMES == "None"'
+      when: always
+      allow_failure: true
+
+
+### Test stage jobs for Fabrikant ###
+
+api-bashorg:
+  extends: .regular-runs-base
+  script:
+    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION
+
+ui-bashorg:
+  extends: .regular-runs-base
+  script:
+    - pytest -v tests/bashorg/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION
+
+
+### Test stage jobs from Allure TestOps for Fabrikant ###
+
+#allure-custom:
+#  extends: .regular-runs-base
+#  rules:
+#    - if: '$CI_MERGE_REQUEST_ID'
+#      when: never
+#    - if: '$ALLURE_FABR_URL != "" && ($MARK_NAMES == "null" || $MARK_NAMES == null) && $SCHEDULER == "null"'
+#      when: always
+#      allow_failure: true
+#  variables:
+#    ALLURE_TEST_PLAN: "./testplan.json"
+#    ALLURE_LAUNCH_ENV: "${ALLURE_FABR_URL}"
+#    ALLURE_LAUNCH_NAME: "Фабрикант. Выборочный запуск из Allure"
+#    ALLURE_LAUNCH_TAGS: "Fabrikant, Allure"
+#  script:
+#    - allurectl job-run plan --output-file ./testplan.json
+#    - allurectl watch -- python -m pytest -v --env=$ALLURE_FABR_URL --browser=$BROWSER --browser_version=$BROWSER_VERSION --log_level=DEBUG --template=$TEMPLATE --alluredir=$ALLURE_RESULTS
+
+#allure-mark:
+#  extends: .regular-runs-base
+#  rules:
+#    - if: '$CI_MERGE_REQUEST_ID || ($MARK_NAMES == "null" || $MARK_NAMES == null)'
+#      when: never
+#    - if: '$ALLURE_FABR_URL != "" && ($MARK_NAMES != "null" || $MARK_NAMES != null) && $SCHEDULER == "null"'
+#      when: always
+#      allow_failure: true
+#  variables:
+#    ALLURE_LAUNCH_ENV: "${ALLURE_FABR_URL}"
+#    ALLURE_LAUNCH_NAME: "Фабрикант. Выборочный запуск из Allure по маркам: ${MARK_NAMES}"
+#    ALLURE_LAUNCH_TAGS: "Fabrikant, Allure, Marks"
+#  script:
+#    - allurectl watch -- python -m pytest -v -m "$MARK_NAMES" --env=$ALLURE_FABR_URL  --browser=$BROWSER --browser_version=$BROWSER_VERSION --log_level=DEBUG --template=$TEMPLATE --alluredir=$ALLURE_RESULTS -n 6

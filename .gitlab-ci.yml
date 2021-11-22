@@ -1,4 +1,4 @@
-#image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
 
 stages:
   - validate
@@ -44,52 +44,33 @@ build-image:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
   script:
-    - printenv
-    - echo ${GITLAB_USER_LOGIN}
-    - echo ${CI_BUILD_TOKEN}
-    - echo ${CI_COMMIT_REF_NAME}
-    - echo ${GITLAB_USER_LOGIN}
-    - echo "============================================"
-    - echo ${CI_REGISTRY_USER}
-    - echo ${CI_REGISTRY_PASSWORD}
-    - echo ${CI_REGISTRY}
-    - echo ${CI_COMMIT_REF_NAME}
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
     - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
-#    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN git.fabrikant.ru:4567
-#    - docker build -t git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME} .
-#    - docker push git.fabrikant.ru:4567/automation-and-quality/pytest_framework:${CI_COMMIT_REF_NAME}
 
 
 ### Downstream stage jobs ###
-#
-#bashorg-test:
-#  stage: downstream
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
-#      variables:
-#        ALLURE_FABR_URL: $ALLURE_FABR_URL
-#      when: always
-#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#      when: manual
-#    - if: '$ALLURE_START_PROD'
-#      when: never
-#    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && ($MARK_NAMES != null || $MARK_NAMES != "" || $TEMPLATE != null) && ($ALLURE_FABR_URL != null || $ALLURE_FABR_URL != "") && ($ALLURE_NEP_URL == null || $ALLURE_NEP_URL == "")'
-#      variables:
-#        ALLURE_FABR_URL: $ALLURE_FABR_URL
-#        ALLURE_JOB_RUN_ID: $ALLURE_JOB_RUN_ID
-#      when: always
-#  variables:
-#    BROWSER: $BROWSER
-#    BROWSER_VERSION: $BROWSER_VERSION
-#    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-#    MARK_NAMES: $MARK_NAMES
-#    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-#    SCHEDULER: $SCHEDULER
-#  trigger:
-#    include:
-#      - local: config/pipelines/.bashorg-test-ci.yml
+
+bashorg-test:
+  stage: downstream
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
+      when: always
+  variables:
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    ENVIRONMENT: $ENVIRONMENT
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    MARK_NAMES: $MARK_NAMES
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    SCHEDULER: $SCHEDULER
+  trigger:
+    include:
+      - local: config/pipelines/.bashorg-test-ci.yml
 #
 #reqres-test:
 #  stage: downstream
