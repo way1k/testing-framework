@@ -9,10 +9,10 @@ stages:
 
 .regular-runs-base:
   stage: test
-  before_script:
-    - printenv
-  script:
-    - printenv
+#  before_script:
+#    - printenv
+#  script:
+#    - printenv
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
       when: always

@@ -55,7 +55,8 @@ bashorg-test:
   stage: downstream
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
-      when: always
+      when: manual
+      allow_failure: true
 #    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
 #      when: manual
 #    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
