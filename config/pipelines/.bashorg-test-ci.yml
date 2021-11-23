@@ -19,7 +19,7 @@ stages:
 #      allow_failure: true
 #    - if: '$CI_MERGE_REQUEST_ID'
 #      when: manual
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
         when: manual
 
 #    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push")'
