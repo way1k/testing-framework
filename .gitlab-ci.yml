@@ -54,13 +54,15 @@ build-image:
 bashorg-test:
   stage: downstream
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
+#      when: manual
 #    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
 #      when: always
 #    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
 #      when: always
-  variables:
+#  variables:
 #    BROWSER: $BROWSER
 #    BROWSER_VERSION: $BROWSER_VERSION
 #    ENVIRONMENT: $ENVIRONMENT
