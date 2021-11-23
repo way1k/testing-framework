@@ -14,7 +14,7 @@ stages:
 #  script:
 #    - printenv
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $PIPELINE_SOURCE == "push"
       when: always
       allow_failure: true
 
@@ -46,7 +46,7 @@ stages:
 api-bashorg:
   stage: test
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $PIPELINE_SOURCE == "push"
       when: always
       allow_failure: true
   extends: .regular-runs-base
