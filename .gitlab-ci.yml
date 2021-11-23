@@ -18,8 +18,8 @@ validate-requirements:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event"'
-#      changes:
-#        - requirements.txt
+      changes:
+        - requirements.txt
       when: always
   script:
     - pip install -r requirements.txt
@@ -68,7 +68,7 @@ bashorg-test:
     ENVIRONMENT: $ENVIRONMENT
     COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
     MARK_NAMES: $MARK_NAMES
-    CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     SCHEDULER: $SCHEDULER
   trigger:
     include:

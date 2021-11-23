@@ -16,6 +16,8 @@ stages:
     - if: '$SCHEDULER == "bashorg-test" && $MARK_NAMES == "None"'
       when: always
       allow_failure: true
+  script_before:
+    - printenv
 
 
 ### Test stage jobs for Fabrikant ###
