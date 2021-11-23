@@ -70,7 +70,7 @@ bashorg-test:
 #    SCHEDULER: $SCHEDULER
   trigger:
     include:
-      - local: config/pipelines/.bashorg-test-ci.yml
+      - local: /config/pipelines/.bashorg-test-ci.yml
 #
 #reqres-test:
 #  stage: downstream
