@@ -1,4 +1,4 @@
-image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+image: registry.gitlab.com/way1k-automation-group/test_framework/image:${COMMIT_REF_NAME}
 
 stages:
   - test
