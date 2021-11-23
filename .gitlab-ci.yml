@@ -72,11 +72,11 @@ bashorg-test:
     MARK_NAMES: $MARK_NAMES
 #    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
 #    SCHEDULER: $SCHEDULER
-  script:
-    - printenv
   trigger:
     include:
       - local: /config/pipelines/.bashorg-test-ci.yml
+  script:
+    - printenv
 #
 #reqres-test:
 #  stage: downstream
