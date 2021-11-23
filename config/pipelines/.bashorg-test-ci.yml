@@ -9,9 +9,14 @@ stages:
 
 .regular-runs-base:
   stage: test
+  before_script:
+    - printenv
+  script:
+    - printenv
   rules:
     -if: $CI_PIPELINE_SOURCE == "push"
-    when: always
+      when: always
+      allow_failure: true
 #    - if: '$CI_MERGE_REQUEST_ID'
 #      variables:
 #        ALLURE_FABR_URL: "test"
