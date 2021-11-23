@@ -9,8 +9,8 @@ stages:
 
 .regular-runs-base:
   stage: test
-  tags:
-    - common-255
+#  tags:
+#    - common-255
   rules:
 #    - if: '$CI_MERGE_REQUEST_ID'
 #      variables:
@@ -27,8 +27,8 @@ stages:
 #    - if: '$SCHEDULER == "bashorg-test" && $MARK_NAMES == "None"'
 #      when: always
 #      allow_failure: true
-  before_script:
-    - printenv
+#  before_script:
+#    - printenv
 
 
 ### Test stage jobs for Fabrikant ###
