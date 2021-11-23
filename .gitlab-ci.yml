@@ -64,6 +64,7 @@ bashorg-test:
 #    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
 #      when: always
   variables:
+    REGISTRY: CI_REGISTRY
     COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
     BROWSER: $BROWSER
     BROWSER_VERSION: $BROWSER_VERSION
@@ -71,6 +72,8 @@ bashorg-test:
     MARK_NAMES: $MARK_NAMES
 #    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
 #    SCHEDULER: $SCHEDULER
+  script:
+    - printenv
   trigger:
     include:
       - local: /config/pipelines/.bashorg-test-ci.yml
