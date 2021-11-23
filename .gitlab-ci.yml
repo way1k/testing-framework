@@ -56,7 +56,7 @@ bashorg-test:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
-      allow_failure: true
+#      allow_failure: true
 #    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
 #      when: manual
 #    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
