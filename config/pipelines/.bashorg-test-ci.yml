@@ -9,16 +9,18 @@ stages:
 
 .regular-runs-base:
   stage: test
-#  tags:
-#    - common-255
   rules:
+    -if: $CI_PIPELINE_SOURCE == "push"
+    when: always
 #    - if: '$CI_MERGE_REQUEST_ID'
 #      variables:
 #        ALLURE_FABR_URL: "test"
 #      when: manual
 #      allow_failure: true
-    - if: '$CI_MERGE_REQUEST_ID'
-      when: manual
+
+#    - if: '$CI_MERGE_REQUEST_ID'
+#      when: always
+
 #    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
 #      when: manual
 
