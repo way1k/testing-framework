@@ -1,14 +1,14 @@
 image: registry.gitlab.com/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
 
 stages:
-  - test
+  - kek
 
 ### Job templates ###
 
 ### Test stage templates ###
 
 .regular-runs-base:
-  stage: test
+  stage: kek
 #  tags:
 #    - common-255
   rules:
