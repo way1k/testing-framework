@@ -10,9 +10,9 @@ stages:
 .regular-runs-base:
   stage: test
   rules:
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push")'
-      when: manual
-      allow_failure: true
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push")'
+#      when: manual
+#      allow_failure: true
     - if: '$SCHEDULER == "bashorg-test" && $MARK_NAMES == "None"'
       when: always
       allow_failure: true
