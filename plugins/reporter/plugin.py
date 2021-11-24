@@ -1,5 +1,7 @@
 import getpass
 import os
+import time
+
 import pytest
 from plugins.reporter import api, utils
 from plugins.reporter.utils import get_active_branch_name, get_platform
@@ -42,6 +44,7 @@ def pytest_sessionfinish(session):
         rep_num = client.get_build_num(path)
         path += f"/{rep_num}"
 
+        time.sleep(10)
         trigger = client.is_reports(path)
 
         if trigger:
