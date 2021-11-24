@@ -7,6 +7,6 @@ import allure
 def test_bashorg_passed(platform):
 
     with allure.step("Открыть главную страницу"):
-        time.sleep(60)
+        time.sleep(90)
         assert 1 == 1
 
