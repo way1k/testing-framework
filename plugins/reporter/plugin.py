@@ -13,14 +13,26 @@ ALLURE_ENVIRONMENT_PROPERTIES_FILE = "environment.properties"
 TEST_RESULTS = []
 
 
+@pytest.fixture(scope="session", autouse=True)
+def session_data(worker_id):
+    if worker_id == "master":
+        os.environ["WORKER"] = "MASTER"
+    else:
+        os.environ["WORKER"] = "SLAVE"
+        # not executing in with multiple workers, just produce the data and let
+        # pytest's fixture caching do its job
+        print(worker_id)
+
+
 def pytest_configure(config):
     if config.getoption('report') == 'yes':
         config.option.allure_report_dir = ALLURE_REPORT["results_dir"]
 
 
 def pytest_sessionfinish(session):
-
-    if session.config.option.allure_report_dir:
+    # a = session.config.option
+    # pytest_worker_id = session.config.slaveinput['slaveid']
+    if session.config.option.allure_report_dir and os.environ.get("WORKER") == "MASTER":
         allure_dir = session.config.option.allure_report_dir
     else:
         return
@@ -44,7 +56,6 @@ def pytest_sessionfinish(session):
         rep_num = client.get_build_num(path)
         path += f"/{rep_num}"
 
-        time.sleep(10)
         trigger = client.is_reports(path)
 
         if trigger:
