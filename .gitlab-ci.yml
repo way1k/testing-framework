@@ -58,8 +58,6 @@ bashorg-test:
       when: manual
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
       when: always
-#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES != "None"'
-#      when: always
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     REGISTRY: $CI_REGISTRY
@@ -72,29 +70,23 @@ bashorg-test:
   trigger:
     include:
       - local: 'config/pipelines/.bashorg-test-ci.yml'
-#
-#reqres-test:
-#  stage: downstream
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER =~ /^reqres-test.*/'
-#      variables:
-#        ALLURE_NEP_URL: $ALLURE_NEP_URL
-#      when: always
-#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#      when: manual
-#    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger")'
-#      variables:
-#        ALLURE_JOB_RUN_ID: $ALLURE_JOB_RUN_ID
-#        ALLURE_NEP_URL: $ALLURE_NEP_URL
-#        ALLURE_NEP_ECP: $ALLURE_NEP_ECP
-#      when: always
-#  variables:
-#    BROWSER: $BROWSER
-#    BROWSER_VERSION: $BROWSER_VERSION
-#    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-#    MARK_NAMES: $MARK_NAMES
-#    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-#    SCHEDULER: $SCHEDULER
-#  trigger:
-#    include:
-#      - local: config/pipelines/.reqres-test-ci.yml
+
+reqres-test:
+  stage: downstream
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
+      when: always
+  variables:
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    REGISTRY: $CI_REGISTRY
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    ENVIRONMENT: $ENVIRONMENT
+    MARK_NAMES: $MARK_NAMES
+    SCHEDULER: $SCHEDULER
+  trigger:
+    include:
+      - local: 'config/pipelines/.reqres-test-ci.yml'
