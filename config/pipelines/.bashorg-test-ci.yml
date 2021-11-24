@@ -10,7 +10,7 @@ stages:
 .regular-runs-base:
   stage: test
   rules:
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+    - if: '($PIPELINE_SOURCE == "merge_request_event" || $PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
       when: manual
 #    - if: $PIPELINE_SOURCE == "push"
 #      when: manual
