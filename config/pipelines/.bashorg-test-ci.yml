@@ -9,13 +9,11 @@ stages:
 
 .regular-runs-base:
   stage: test
-#  before_script:
-#    - printenv
-#  script:
-#    - printenv
   rules:
-    - if: $PIPELINE_SOURCE == "push"
-      when: always
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES != "None"'
+      when: manual
+#    - if: $PIPELINE_SOURCE == "push"
+#      when: manual
       allow_failure: true
 
 #    - if: '$CI_MERGE_REQUEST_ID'
@@ -44,11 +42,6 @@ stages:
 ### Test stage jobs for Fabrikant ###
 
 api-bashorg:
-  stage: test
-  rules:
-    - if: $PIPELINE_SOURCE == "push"
-      when: always
-      allow_failure: true
   extends: .regular-runs-base
   script:
     - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION
