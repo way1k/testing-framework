@@ -24,7 +24,7 @@ api-bashorg:
     - echo $ENVIRONMENT
     - echo $BROWSER
     - echo $BROWSER_VERSION
-    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes -n 1
 
 ui-bashorg:
   extends: .regular-runs-base
@@ -32,4 +32,4 @@ ui-bashorg:
     - echo $ENVIRONMENT
     - echo $BROWSER
     - echo $BROWSER_VERSION
-    - pytest -v tests/bashorg/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/bashorg/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes -n 1
