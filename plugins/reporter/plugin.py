@@ -25,7 +25,7 @@ def pytest_sessionfinish(session):
 
     server_url = ALLURE_REPORT["url"]
 
-    assert os.path.isdir(allure_dir), f"Папки {allure_dir} не существует"
+    # assert os.path.isdir(allure_dir), f"Папки {allure_dir} не существует"
 
     try:
         utils.compress_to_zip(
