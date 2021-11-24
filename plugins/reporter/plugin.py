@@ -18,6 +18,10 @@ def pytest_configure(config):
 
 def pytest_sessionfinish(session):
 
+    report = os.environ.get("PYTEST_REPORT")
+    if report == "CREATED":
+        return
+
     if session.config.option.allure_report_dir:
         allure_dir = session.config.option.allure_report_dir
     else:
@@ -62,6 +66,7 @@ def pytest_sessionfinish(session):
         if rep_link:
             os.environ["ALLURE_REPORT_URL"] = rep_link
             utils.print_(f"Ссылка на отчет: {rep_link}")
+            os.environ["PYTEST_REPORT"] = "CREATED"
         else:
             utils.print_("Не удалось сгенерировать отчет...")
         utils.print_("-" * 80)
