@@ -1,0 +1,35 @@
+image: ${REGISTRY}/way1k-automation-group/test_framework/image:${COMMIT_REF_NAME}
+
+stages:
+  - test
+
+### Job templates ###
+
+### Test stage templates ###
+
+.regular-runs-base:
+  stage: test
+  tags:
+    - common-255
+  rules:
+    - if: '($PIPELINE_SOURCE == "merge_request_event" || $PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+      when: manual
+      allow_failure: true
+
+### Test stage jobs for Fabrikant ###
+
+api-reqres:
+  extends: .regular-runs-base
+  script:
+    - echo $ENVIRONMENT
+    - echo $BROWSER
+    - echo $BROWSER_VERSION
+    - pytest -v tests/reqres/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+
+ui-reqres:
+  extends: .regular-runs-base
+  script:
+    - echo $ENVIRONMENT
+    - echo $BROWSER
+    - echo $BROWSER_VERSION
+    - pytest -v tests/reqres/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
