@@ -15,7 +15,9 @@ TEST_RESULTS = []
 
 @pytest.fixture(scope="session", autouse=True)
 def session_data(worker_id):
-    if worker_id == "master":
+    a = worker_id
+    # breakpoint()
+    if worker_id == "master" or worker_id == "gw0":
         os.environ["WORKER"] = "MASTER"
     else:
         os.environ["WORKER"] = "SLAVE"
