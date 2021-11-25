@@ -3,7 +3,7 @@ import allure
 
 @allure.title("Проверка увеличения рейтинга на странице рандомных цитат")
 @allure.label("platform", "Bashorg")
-def test_check_rating_increase(platform):
+def test_bashorg_check_rating_increase(platform):
 
     with allure.step("Открыть главную страницу"):
         platform.bash_org.main_page.open_main_page()

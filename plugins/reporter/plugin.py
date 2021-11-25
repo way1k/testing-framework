@@ -36,22 +36,23 @@ def add_environment_property(request):
 
 
 def pytest_sessionfinish(session):
-    # a = session.config.option
-    # pytest_worker_id = session.config.slaveinput['slaveid']
     worker = get_xdist_worker_id(session)
-    # raise Exception(f"worker_id: {a}")
     if session.config.option.allure_report_dir and worker == "master":
-    # if session.config.option.allure_report_dir and os.environ.get("WORKER") == "MASTER":
         allure_dir = session.config.option.allure_report_dir
     else:
         return
 
-
-    # assert os.path.isdir(allure_dir), f"Папки {allure_dir} не существует"
+    assert os.path.isdir(allure_dir), f"Папки {allure_dir} не существует"
 
     try:
+        utils.compress_to_zip(
+            folder=allure_dir,
+            zip_name=ALLURE_RESULTS_ZIP
+        )
+
         server_url = ALLURE_REPORT["url"]
         client = api.AllureServer(server_url)
+
         path = os.environ.get("GITLAB_USER_LOGIN") or getpass.getuser()
 
         utils.print_("-" * 80)
@@ -66,17 +67,6 @@ def pytest_sessionfinish(session):
         rep_num = client.get_build_num(path)
         path += f"/{rep_num}"
 
-        # trigger = client.is_reports(path)
-        #
-        # if trigger:
-        #     return
-        # else:
-
-        utils.compress_to_zip(
-            folder=allure_dir,
-            zip_name=ALLURE_RESULTS_ZIP
-        )
-
         rep_link = client.generate_report(
             client.send_results(ALLURE_RESULTS_ZIP),
             path
@@ -84,8 +74,6 @@ def pytest_sessionfinish(session):
 
         if rep_link:
             os.environ["ALLURE_REPORT_URL"] = rep_link
-            # utils.print_("-" * 80)
-            # utils.print_(f"Сгенерирован отчет для \"{os.environ.get('GITLAB_USER_LOGIN') or getpass.getuser()}\"")
             utils.print_(f"Ссылка на отчет: {rep_link}")
 
         else:
