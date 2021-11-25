@@ -26,6 +26,31 @@ validate-requirements:
     - echo "Зависимости совместимы"
 
 ### Build stage jobs ###
+
+build-image:
+  stage: build
+  image: docker:20.10.7
+  tags:
+    - common-255
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - requirements.txt
+        - Dockerfile
+        - pytest.ini.dist
+      when: always
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#      when: always
+  script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
+    - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
+
+
+### Downstream stage jobs ###
+
 mark-names-launch:
   stage: downstream
   rules:
@@ -44,31 +69,6 @@ mark-names-launch:
     SCHEDULER: $SCHEDULER
   script:
     - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
-
-
-build-image:
-  stage: build
-  image: docker:20.10.7
-  tags:
-    - common-255
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
-      changes:
-        - requirements.txt
-        - Dockerfile
-        - pytest.ini.dist
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
-  script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-    - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
-    - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
-
-
-### Downstream stage jobs ###
 
 bashorg-test:
   stage: downstream
