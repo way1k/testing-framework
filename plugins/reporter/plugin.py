@@ -1,12 +1,10 @@
-import getpass
 import os
-import time
-from xdist import is_xdist_worker, get_xdist_worker_id
-
 import pytest
+import getpass
+from xdist import get_xdist_worker_id
 from plugins.reporter import api, utils
-from plugins.reporter.utils import get_active_branch_name, get_platform
 from settings import ALLURE_REPORT, LOCAL_FILES_DIR
+from plugins.reporter.utils import get_active_branch_name, get_platform
 
 
 ALLURE_RESULTS_ZIP = LOCAL_FILES_DIR + "/allure_results.zip"
@@ -14,25 +12,27 @@ ALLURE_ENVIRONMENT_PROPERTIES_FILE = "environment.properties"
 TEST_RESULTS = []
 
 
-@pytest.fixture(scope="session", autouse=True)
-def session_data(worker_id):
-    # a = is_xdist_worker(session)
-    a = worker_id
-    # raise Exception(f"worker_id: {worker_id}")
-    # breakpoint()
-    # if worker_id == "master" or worker_id == "gw0":
-    if worker_id == "master":
-        os.environ["WORKER"] = "MASTER"
-    else:
-        os.environ["WORKER"] = "SLAVE"
-        # not executing in with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        print(worker_id)
-
-
 def pytest_configure(config):
     if config.getoption('report') == 'yes':
         config.option.allure_report_dir = ALLURE_REPORT["results_dir"]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def add_environment_property(request):
+    properties = {}
+    stage = request.config.getoption("--env")
+    properties['Stage'] = stage
+
+    yield
+
+    allure_dir = request.session.config.option.allure_report_dir
+    if not allure_dir or not os.path.isdir(allure_dir) or len(properties) == 0:
+        return
+
+    allure_env_path = os.path.join(allure_dir, ALLURE_ENVIRONMENT_PROPERTIES_FILE)
+    with open(allure_env_path, "w") as f:
+        data = "\n".join([f"{variable}={value}" for variable, value in properties.items()])
+        f.write(data)
 
 
 def pytest_sessionfinish(session):
@@ -54,7 +54,8 @@ def pytest_sessionfinish(session):
         client = api.AllureServer(server_url)
         path = os.environ.get("GITLAB_USER_LOGIN") or getpass.getuser()
 
-        # utils.print_(f"Генерируется отчет для \"{path}\"...")
+        utils.print_("-" * 80)
+        utils.print_(f"Генерируется отчет для \"{path}\"...")
 
         branch_name = get_active_branch_name()
         path += f"/{branch_name}"
@@ -65,72 +66,30 @@ def pytest_sessionfinish(session):
         rep_num = client.get_build_num(path)
         path += f"/{rep_num}"
 
-        trigger = client.is_reports(path)
+        # trigger = client.is_reports(path)
+        #
+        # if trigger:
+        #     return
+        # else:
 
-        if trigger:
-            return
+        utils.compress_to_zip(
+            folder=allure_dir,
+            zip_name=ALLURE_RESULTS_ZIP
+        )
+
+        rep_link = client.generate_report(
+            client.send_results(ALLURE_RESULTS_ZIP),
+            path
+        )
+
+        if rep_link:
+            os.environ["ALLURE_REPORT_URL"] = rep_link
+            # utils.print_("-" * 80)
+            # utils.print_(f"Сгенерирован отчет для \"{os.environ.get('GITLAB_USER_LOGIN') or getpass.getuser()}\"")
+            utils.print_(f"Ссылка на отчет: {rep_link}")
+
         else:
-
-            utils.compress_to_zip(
-                folder=allure_dir,
-                zip_name=ALLURE_RESULTS_ZIP
-            )
-
-            rep_link = client.generate_report(
-                client.send_results(ALLURE_RESULTS_ZIP),
-                path
-            )
-
-        # stand = _get_stand(request=session)
-
-        # if "prod" in path:
-        #     for file in glob.glob(f"{allure_dir}/*-result.json"):
-        #         with open(file, "r") as f:
-        #             TEST_RESULTS.append(_parse_data_from_json(f, stand))
-
-            if rep_link:
-                os.environ["ALLURE_REPORT_URL"] = rep_link
-                utils.print_("-" * 80)
-                utils.print_(f"Сгенерирован отчет для \"{os.environ.get('GITLAB_USER_LOGIN') or getpass.getuser()}\"")
-                utils.print_(f"Ссылка на отчет: {rep_link}")
-            else:
-                utils.print_("Не удалось сгенерировать отчет...")
-            utils.print_("-" * 80)
+            utils.print_("Не удалось сгенерировать отчет...")
+        utils.print_("-" * 80)
     finally:
         utils.cleanup(ALLURE_RESULTS_ZIP, allure_dir)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def add_environment_property(request):
-    properties = {}
-    stage = request.config.getoption("--env")
-    properties['Stage'] = stage
-
-    yield
-
-    allure_dir = request.session.config.option.allure_report_dir
-    if not allure_dir or not os.path.isdir(allure_dir) or len(properties) == 0:
-        return
-
-    allure_env_path = os.path.join(allure_dir, ALLURE_ENVIRONMENT_PROPERTIES_FILE)
-    with open(allure_env_path, "w") as f:
-        data = "\n".join([f"{variable}={value}" for variable, value in properties.items()])
-        f.write(data)
-
-
-
-
-
-
-# def _parse_data_from_json(file, stand):
-#     result = {}
-#     raw = json.load(file)
-#     result["name"] = raw.get("name")
-#     result["status"] = raw.get("status")
-#     result["mark"] = _get_tflo_mark(raw.get("labels", []))
-#     result["duration"] = round(((raw.get("stop", 0) - raw.get("start", 0)) / 1000), 2)
-#     result["date"] = str(datetime.now().strftime("%Y-%m-%d %X"))
-#     result["stand"] = stand
-#     result["log"] = raw.get("statusDetails", {}).get("message")
-#
-#     return result

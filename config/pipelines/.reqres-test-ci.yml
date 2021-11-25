@@ -24,6 +24,7 @@ api-reqres:
     - echo $ENVIRONMENT
     - echo $BROWSER
     - echo $BROWSER_VERSION
+    - printenv
     - pytest -v tests/reqres/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
 
 ui-reqres:

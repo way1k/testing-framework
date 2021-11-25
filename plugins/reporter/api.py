@@ -36,17 +36,6 @@ class AllureServer(object):
             return
         return len(r.json()) + 1
 
-    def is_reports(self, path):
-        # path = "remote/chrome/way1k/None/3"
-        r = self._session.get(
-            f"{self.url}/api/report?path={path}",
-        )
-        reports = r.json()
-        if len(reports) > 0:
-            return True
-        else:
-            return False
-
     def generate_report(self, res_uid, path):
         assert isinstance(path, str), f"Path must be str format, got {type(path)}"
 
