@@ -41,8 +41,8 @@ build-image:
         - Dockerfile
         - pytest.ini.dist
       when: always
-#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
