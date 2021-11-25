@@ -56,7 +56,8 @@ bashorg-test:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
       when: always
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
@@ -76,7 +77,8 @@ reqres-test:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
       when: always
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
@@ -96,7 +98,8 @@ mark-names-launch:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $MARK_NAMES != "None"'
       when: always
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
