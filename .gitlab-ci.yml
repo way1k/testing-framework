@@ -51,31 +51,20 @@ build-image:
 
 ### Downstream stage jobs ###
 
-mark-names-launch:
-  stage: downstream
-  rules:
-    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
-      when: manual
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $MARK_NAMES != "None"'
-      when: always
-  variables:
-    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-    REGISTRY: $CI_REGISTRY
-    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-    BROWSER: $BROWSER
-    BROWSER_VERSION: $BROWSER_VERSION
-    ENVIRONMENT: $ENVIRONMENT
-    MARK_NAMES: $MARK_NAMES
-    SCHEDULER: $SCHEDULER
-  script:
-    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
-
 bashorg-test:
   stage: downstream
   rules:
+#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+#      when: always
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+      when: always
     - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
       when: manual
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
       when: always
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
@@ -93,9 +82,17 @@ bashorg-test:
 reqres-test:
   stage: downstream
   rules:
+#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
+#      when: always
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+      when: always
     - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
       when: manual
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
       when: always
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
@@ -109,3 +106,23 @@ reqres-test:
   trigger:
     include:
       - local: 'config/pipelines/.reqres-test-ci.yml'
+
+#mark-names-launch:
+#  stage: downstream
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $MARK_NAMES != "None"'
+#      when: always
+#    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#      when: manual
+#  variables:
+#    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+#    REGISTRY: $CI_REGISTRY
+#    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+#    BROWSER: $BROWSER
+#    BROWSER_VERSION: $BROWSER_VERSION
+#    ENVIRONMENT: $ENVIRONMENT
+#    MARK_NAMES: $MARK_NAMES
+#    SCHEDULER: $SCHEDULER
+#  script:
+#    - echo $MARK_NAMES
+#    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
