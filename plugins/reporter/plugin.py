@@ -1,6 +1,7 @@
 import getpass
 import os
 import time
+from xdist import is_xdist_worker, get_xdist_worker_id
 
 import pytest
 from plugins.reporter import api, utils
@@ -15,9 +16,12 @@ TEST_RESULTS = []
 
 @pytest.fixture(scope="session", autouse=True)
 def session_data(worker_id):
+    # a = is_xdist_worker(session)
     a = worker_id
+    # raise Exception(f"worker_id: {worker_id}")
     # breakpoint()
-    if worker_id == "master" or worker_id == "gw0":
+    # if worker_id == "master" or worker_id == "gw0":
+    if worker_id == "master":
         os.environ["WORKER"] = "MASTER"
     else:
         os.environ["WORKER"] = "SLAVE"
@@ -34,7 +38,10 @@ def pytest_configure(config):
 def pytest_sessionfinish(session):
     # a = session.config.option
     # pytest_worker_id = session.config.slaveinput['slaveid']
-    if session.config.option.allure_report_dir and os.environ.get("WORKER") == "MASTER":
+    worker = get_xdist_worker_id(session)
+    # raise Exception(f"worker_id: {a}")
+    if session.config.option.allure_report_dir and worker == "master":
+    # if session.config.option.allure_report_dir and os.environ.get("WORKER") == "MASTER":
         allure_dir = session.config.option.allure_report_dir
     else:
         return
