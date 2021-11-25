@@ -12,10 +12,12 @@ stages:
   tags:
     - common-255
   rules:
-#    - if: '($PIPELINE_SOURCE == "merge_request_event" || $PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
+    - if: '($PIPELINE_SOURCE == "merge_request_event" || $PIPELINE_SOURCE == "push") && $MARK_NAMES == "None"'
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
       allow_failure: true
+  before_script:
+    - printenv
 
 ### Test stage jobs for Fabrikant ###
 
