@@ -52,7 +52,7 @@ build-image:
 
 ### Downstream stage jobs ###
 
-bashorg-test:
+test-bashorg:
   stage: downstream
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
@@ -73,7 +73,7 @@ bashorg-test:
     include:
       - local: 'config/pipelines/.bashorg-test-ci.yml'
 
-reqres-test:
+test-reqres:
   stage: downstream
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
