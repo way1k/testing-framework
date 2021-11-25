@@ -142,4 +142,4 @@ def pytest_addoption(parser):
     parser.addoption('--browser_version', action="store", default="92.0")
     parser.addoption("--env", action="store", default="dev")
     parser.addoption("--log_level", action="store", default="INFO")
-    parser.addoption("--report", action="store", default="no")
+    parser.addoption("--report", action="store", default="yes")
