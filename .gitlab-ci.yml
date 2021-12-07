@@ -92,6 +92,7 @@ test-reqres:
     include:
       - local: 'config/pipelines/.reqres-test-ci.yml'
 
+
 mark-names-launch:
   stage: downstream
   tags:
