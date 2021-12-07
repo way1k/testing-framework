@@ -43,8 +43,6 @@ build-image:
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "push"' # Для показа сборки контейнера
-      when: always
   script:
     - printenv
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
