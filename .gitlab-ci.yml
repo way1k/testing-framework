@@ -49,7 +49,6 @@ build-image:
     - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
     - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
 
-
 ### Downstream stage jobs ###
 
 test-bashorg:
