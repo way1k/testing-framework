@@ -3,10 +3,6 @@ image: ${REGISTRY}/way1k-automation-group/test_framework/image:${COMMIT_REF_NAME
 stages:
   - test
 
-### Job templates ###
-
-### Test stage templates ###
-
 .regular-runs-base:
   stage: test
   tags:
@@ -17,7 +13,7 @@ stages:
       when: manual
       allow_failure: true
 
-### Test stage jobs for Fabrikant ###
+### Test stage jobs for Bashorg ###
 
 api-bashorg:
   extends: .regular-runs-base
