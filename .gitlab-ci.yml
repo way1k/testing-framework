@@ -44,6 +44,7 @@ build-image:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
   script:
+    - printenv
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -t ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME} .
     - docker push ${CI_REGISTRY}/way1k-automation-group/test_framework/image:${CI_COMMIT_REF_NAME}
@@ -51,49 +52,62 @@ build-image:
 
 ### Downstream stage jobs ###
 
-bashorg-test:
+test-bashorg:
   stage: downstream
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
-#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "bahsorg-test"'
-#      when: always
-#    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger") && $MARK_NAMES == "None"'
-#      when: always
   variables:
-#    BROWSER: $BROWSER
-#    BROWSER_VERSION: $BROWSER_VERSION
-#    ENVIRONMENT: $ENVIRONMENT
-#    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-#    MARK_NAMES: $MARK_NAMES
-#    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-#    SCHEDULER: $SCHEDULER
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    REGISTRY: $CI_REGISTRY
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    ENVIRONMENT: $ENVIRONMENT
+    MARK_NAMES: $MARK_NAMES
+    SCHEDULER: $SCHEDULER
   trigger:
     include:
-      - local: /config/pipelines/.bashorg-test-ci.yml
-#
-#reqres-test:
-#  stage: downstream
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER =~ /^reqres-test.*/'
-#      variables:
-#        ALLURE_NEP_URL: $ALLURE_NEP_URL
-#      when: always
-#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#      when: manual
-#    - if: '($CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger")'
-#      variables:
-#        ALLURE_JOB_RUN_ID: $ALLURE_JOB_RUN_ID
-#        ALLURE_NEP_URL: $ALLURE_NEP_URL
-#        ALLURE_NEP_ECP: $ALLURE_NEP_ECP
-#      when: always
-#  variables:
-#    BROWSER: $BROWSER
-#    BROWSER_VERSION: $BROWSER_VERSION
-#    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
-#    MARK_NAMES: $MARK_NAMES
-#    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-#    SCHEDULER: $SCHEDULER
-#  trigger:
-#    include:
-#      - local: config/pipelines/.reqres-test-ci.yml
+      - local: 'config/pipelines/.bashorg-test-ci.yml'
+
+test-reqres:
+  stage: downstream
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULER == "reqres-test"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
+      when: manual
+  variables:
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    REGISTRY: $CI_REGISTRY
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    ENVIRONMENT: $ENVIRONMENT
+    MARK_NAMES: $MARK_NAMES
+    SCHEDULER: $SCHEDULER
+  trigger:
+    include:
+      - local: 'config/pipelines/.reqres-test-ci.yml'
+
+mark-names-launch:
+  stage: downstream
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $MARK_NAMES != "None"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
+      when: manual
+  variables:
+    PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    REGISTRY: $CI_REGISTRY
+    COMMIT_REF_NAME: $CI_COMMIT_REF_NAME
+    BROWSER: $BROWSER
+    BROWSER_VERSION: $BROWSER_VERSION
+    ENVIRONMENT: $ENVIRONMENT
+    MARK_NAMES: $MARK_NAMES
+    SCHEDULER: $SCHEDULER
+  script:
+    - echo $MARK_NAMES
+    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes

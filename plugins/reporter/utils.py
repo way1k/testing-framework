@@ -7,12 +7,17 @@ from settings import PROJECT_DIR
 
 
 def get_active_branch_name():
-    head_dir = PROJECT_DIR + "/.git/HEAD"
-    with open(head_dir, "r") as f:
-        content = f.read().splitlines()
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
+    branch = os.environ.get("CI_COMMIT_REF_NAME")
+
+    if not branch:
+        head_dir = PROJECT_DIR + "/.git/HEAD"
+        with open(head_dir, "r") as f:
+            content = f.read().splitlines()
+        for line in content:
+            if line[0:4] == "ref:":
+                branch = line.partition("refs/heads/")[2]
+
+    return branch
 
 
 def get_platform(config):

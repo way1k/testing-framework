@@ -13,14 +13,14 @@ stages:
       when: manual
       allow_failure: true
 
-### Test stage jobs for Bashorg ###
+### Test stage jobs for Reqres ###
 
-api-bashorg:
+api-reqres:
   extends: .regular-runs-base
   script:
-    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/reqres/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
 
-ui-bashorg:
+ui-reqres:
   extends: .regular-runs-base
   script:
-    - pytest -v tests/bashorg/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/reqres/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes

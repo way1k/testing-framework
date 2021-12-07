@@ -7,4 +7,3 @@ def test_bashorg_open(platform):
 
     with allure.step("Открыть главную страницу"):
         platform.bash_org.main_page.open_main_page()
-
