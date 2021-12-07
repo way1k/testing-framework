@@ -61,8 +61,6 @@ test-bashorg:
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
-    - if: '$CI_COMMIT_BRANCH == "master" && $MARK_NAMES == "None"'
-      when: manual
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     REGISTRY: $CI_REGISTRY
