@@ -112,4 +112,4 @@ mark-names-launch:
     SCHEDULER: $SCHEDULER
   script:
     - echo $MARK_NAMES
-    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes --log_level=DEBUG

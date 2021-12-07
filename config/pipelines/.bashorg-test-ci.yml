@@ -18,7 +18,7 @@ stages:
 api-bashorg:
   extends: .regular-runs-base
   script:
-    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/bashorg/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes --log_level=DEBUG
 
 ui-bashorg:
   extends: .regular-runs-base
