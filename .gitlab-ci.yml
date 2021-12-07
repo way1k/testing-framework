@@ -96,11 +96,15 @@ test-reqres:
 
 mark-names-launch:
   stage: downstream
+  tags:
+    - common-255
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $MARK_NAMES != "None"'
       when: always
+      allow_failure: true
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $MARK_NAMES == "None"'
       when: manual
+      allow_failure: true
   variables:
     PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     REGISTRY: $CI_REGISTRY
