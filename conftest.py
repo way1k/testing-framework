@@ -4,6 +4,11 @@ import pytest
 import logging
 import os.path
 import urllib3
+from _pytest.config.argparsing import Parser
+from _pytest.fixtures import SubRequest
+from _pytest.python import Function
+from _pytest.reports import TestReport
+from _pytest.runner import CallInfo
 from dotenv import load_dotenv
 from inspect import currentframe
 from tools.browser.browser_setup import Browser
@@ -25,7 +30,7 @@ logging.captureWarnings(True)
 
 
 @pytest.fixture(scope="function")
-def platform(request):
+def platform(request: SubRequest) -> Browser:
     bash_url = os.environ.get("BASHORG_URL")
     reqres_url = os.environ.get("REQRES_URL")
     module_name = str(currentframe().f_locals['request']).replace("<SubRequest \'platform\' for <Function ", "")[0:-2]
@@ -58,7 +63,7 @@ def platform(request):
 
 
 @pytest.fixture(scope="function")
-def api_reqres():
+def api_reqres() -> BackAPI:
     reqres_url = os.environ.get("REQRES_URL")
     api = BackAPI(base_url=reqres_url)
     yield api
@@ -66,7 +71,7 @@ def api_reqres():
 
 
 @pytest.fixture(scope="session")
-def cleanup_tmp():
+def cleanup_tmp() -> None:
     directory = f"{LOCAL_FILES_DIR}/*"
     for clean_up in glob.glob(directory):
         if not clean_up.endswith('.gitkeep'):
@@ -78,14 +83,14 @@ def cleanup_tmp():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def load_env(request):
+def load_env(request: SubRequest) -> None:
     environment = request.config.getoption("--env")
     dotenv_path = os.path.join(CONFIG_DIR, f".env.{environment}")
     load_dotenv(dotenv_path, override=True)
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtest_makereport(item, call):
+def pytest_runtest_makereport(item: Function, call: CallInfo) -> TestReport:
     outcome = yield
     rep = outcome.get_result()
     setattr(item, "rep_" + rep.when, rep)
@@ -93,12 +98,12 @@ def pytest_runtest_makereport(item, call):
 
 
 @pytest.fixture(scope="session")
-def storage(request):
+def storage(request: SubRequest) -> str:
     return request.config.getoption("--browser")
 
 
 @pytest.fixture(scope="function")
-def traceback_on_failure(request):
+def traceback_on_failure(request: SubRequest):
     yield
     if request.node.rep_setup.failed:
         traceback = request.node.rep_setup.longreprtext
@@ -109,7 +114,7 @@ def traceback_on_failure(request):
             allure.attach(traceback, name='traceback', attachment_type=allure.attachment_type.TEXT)
 
 
-def pytest_collection_modifyitems(items):
+def pytest_collection_modifyitems(items: list[Function]) -> None:
     for item in items:
 
         if "/api" in item.fspath.dirname:
@@ -126,7 +131,7 @@ def pytest_collection_modifyitems(items):
                     item.add_marker(component.lower())
 
 
-def __get_test_name(file_name):
+def __get_test_name(file_name: str) -> str:
     search_file = file_name + '.py'
     for root, dirs, files in os.walk(f"{PROJECT_DIR}/tests"):
         if search_file in files:
@@ -137,9 +142,9 @@ def __get_test_name(file_name):
             return test_name + ' | ' + '\n' + search_file
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--browser", action="store", default="local")
-    parser.addoption('--browser_version', action="store", default="92.0")
+    parser.addoption('--browser_version', action="store", default="101.0")
     parser.addoption("--env", action="store", default="dev")
     parser.addoption("--log_level", action="store", default="INFO")
     parser.addoption("--report", action="store", default="no")

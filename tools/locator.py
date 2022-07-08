@@ -12,10 +12,10 @@ LOCATION_STRATEGIES = {
 
 class Locator:
     """
-    Объект преобразования локатора
+    Locator wrapper for selenium methods
     """
 
-    def __init__(self, **by):
+    def __init__(self, **by: str) -> None:
         by, value = next(iter(by.items()))
         if by == "text":
             self.by = "xpath"
@@ -27,5 +27,5 @@ class Locator:
                     f"Неизвестная стратегия '{by}'. Используй одну из: {list(LOCATION_STRATEGIES.keys())}")
             self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"\"{self.by}={self.value}\""

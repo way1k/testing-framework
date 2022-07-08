@@ -1,5 +1,7 @@
 import re
 import glob
+from typing import Literal
+
 import allure
 import requests
 from time import sleep
@@ -11,53 +13,54 @@ from settings import REMOTE_FILES_DIR, LOCAL_FILES_DIR, SELENOID_DOWNLOAD
 
 class BrowserMethods(BasePage):
     """
-    Класс c описанием методов объекта браузера
+    Class for the browser methods
     """
 
     """
-    Методы прокрутки страницы
+    Scroll page
     """
 
-    def scroll_to_top(self):
+    def scroll_to_top(self) -> None:
         self.browser.wd.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
 
     """
-    Методы вкладок
+    Working with tabs
     """
 
-    def open_new_tab(self, link=''):
+    def open_new_tab(self, link: str = '') -> None:
         self.browser.wd.execute_script(f"window.open('{link}','_blank')")
 
-    def close_last_tab(self, back_to_tab: int = 0):
+    def close_last_tab(self, back_to_tab: int = 0) -> None:
         if len(self.browser.wd.window_handles) > 1:
             self.browser.wd.switch_to.window(window_name=self.browser.wd.window_handles[-1])
             self.browser.wd.close()
             self.browser.wd.switch_to.window(window_name=self.browser.wd.window_handles[back_to_tab])
 
-    def switch_to_new_tab(self):
+    def switch_to_new_tab(self) -> None:
         if len(self.browser.wd.window_handles) > 1:
             self.browser.wd.switch_to.window(window_name=self.browser.wd.window_handles[-1])
 
-    def back_in_history_by_step(self, quantity_steps: int = 1):
+    def back_in_history_by_step(self, quantity_steps: int = 1) -> None:
         for step in range(quantity_steps):
             self.browser.wd.back()
         self.wait_for_ready_state_complete()
 
     """
-    Общие методы
+    Common methods
     """
 
-    def get_session_id(self):
+    def get_session_id(self) -> str:
         return str(self.browser.wd.session_id)
 
-    def screenshots(self, name='screenshot'):
+    def screenshots(self, name: str = 'screenshot') -> None:
         allure.attach(self.browser.wd.get_screenshot_as_png(), name=name, attachment_type=allure.attachment_type.PNG)
 
     """
-    Методы загрузки файлов
+    Download files methods
     """
 
-    def wait_for_download(self, timeout=30):
+    @staticmethod
+    def wait_for_download(timeout: int = 30) -> int:
         sleep(2)
         seconds = 0
         download_timer = True
@@ -71,7 +74,7 @@ class BrowserMethods(BasePage):
         sleep(2)
         return seconds
 
-    def check_quantity_of_downloaded_files(self, quantity_of_files):
+    def check_quantity_of_downloaded_files(self, quantity_of_files: int) -> None:
         sleep(2)
         self.open_new_tab()
         self.switch_to_new_tab()
@@ -79,10 +82,16 @@ class BrowserMethods(BasePage):
         self.wait_visible(Locator(xpath="//table/tbody[@id='tbody']"))
         download_files = len(self.find_all(Locator(xpath="//a[@class='icon file']")))
         assert quantity_of_files == download_files, \
-            f"Ожидаемое кол-во загруженных файлов '{quantity_of_files}' не соответствует найденному '{download_files}'"
+            f"Expected quantity downloaded files '{quantity_of_files}' not equal found quantity '{download_files}'"
         self.close_last_tab()
 
-    def check_downloaded_files(self, storage, file_name: str, is_same: int = None, storage_directory: dir = None):
+    def check_downloaded_files(
+            self,
+            storage: Literal['local', 'chrome'],
+            file_name: str,
+            is_same: int | None = None,
+            storage_directory: str | None = None
+    ):
         sleep(2)
 
         if storage == 'local':
@@ -111,7 +120,7 @@ class BrowserMethods(BasePage):
 
         self.close_last_tab()
 
-    def download_file_from_remote(self, filename: str):
+    def download_file_from_remote(self, filename: str) -> None:
         current_session = self.get_session_id()
         page_url = f"{SELENOID_DOWNLOAD}{current_session}/{filename}"
 
