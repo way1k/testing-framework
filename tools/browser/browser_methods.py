@@ -10,7 +10,6 @@ from pages.base_page import BasePage
 from tools.locator import Locator
 from settings import REMOTE_FILES_DIR, LOCAL_FILES_DIR, SELENOID_DOWNLOAD
 
-
 class BrowserMethods(BasePage):
     """
     Class for the browser methods
