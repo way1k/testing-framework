@@ -1,87 +1,49 @@
-import string
 import random
-from datetime import datetime, timedelta
+import string
 
-"""
-Модуль генерации случайных данных
-"""
+from tools.time_utils import current_timestamp
 
 
-def random_string(length):
+def random_choice_from_sequence(sequence: list | tuple) -> any:
+    """Generates a random choice from sequence"""
+    return random.choice(sequence)
+
+
+def random_string(length: int = 10) -> str:
+    """Generates a random string of fixed length"""
+    letters = string.ascii_lowercase
+    return "".join(random.choice(letters) for _ in range(length))
+
+
+def random_number(length: int = 10) -> str:
+    """Generates a random string with digits of fixed length"""
+    return "".join(random.choice(string.digits) for _ in range(length))
+
+
+def random_digit_in_range(start: int, end: int) -> int:
     """
-    Создает строку из случайных символов в заданном диапазоне
-    :param length: диапазон
-    :return: string
-    """
-    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(1, length))
-
-
-def random_uppercase_string(length):
-    """
-    Создает строку с верхним регистром заданной длинны
-    :param length: длинна строки
-    :return: string
-    """
-    letters = 'ABCDEF0123456789'
-    return ''.join(random.choices(letters.upper(), k=length))
-
-
-def random_digits_in_range(start, end):
-    """
-    Создает случайное число в заданном диапазоне
-    :param start:
-    :param end:
-    :return:
+    Generates random number in a given range
     """
     return random.randrange(start, end)
 
 
-def constant_length_random_number(length):
-    """
-    Создает случайное числовое значение заданной длинны
-    :param length:
-    :return: string
-    """
-    return int(''.join(random.choices(string.digits, k=length)))
+def random_name(length: int = 10, prefix: str | None = None) -> str:
+    """Generates random test user name"""
+    letters = string.ascii_lowercase
+    result_prefix = prefix if prefix is not None else "clain"
+    return result_prefix + "".join(random.choice(letters) for _ in range(length))
 
 
-def generate_timestamp(days):
-    """
-    Создает строку временем и датой в будущем
-    :param days:
-    :return: int
-    """
-    return int(datetime.timestamp(datetime.now() + timedelta(days=days)))
+def random_email() -> str:
+    """Generates user email for tests"""
+    return f"way1k_autotests{str(current_timestamp())}@gmail.com"
 
 
-def generate_date_in_future(date_format: str, days: int = 0, hours: int = 0, minutes: int = 0):
-    """
-    Создает строку временем и датой в будущем по указанному формату
-    :param hours:
-    :param days:
-    :param minutes:
-    :param date_format:
-    :return: datetime string
-    """
-    return datetime.strftime(datetime.now() + timedelta(days=days, hours=hours, minutes=minutes), date_format)
+def random_password() -> str:
+    """Generates password for tests"""
+    return random_string(5).capitalize() + str(random_number())
 
 
-def generate_now_date(date_format):
-    """
-    Создает строку с текущим временем и датой
-    :param date_format:
-    :return: datetime string
-    """
-    return datetime.strftime(datetime.now(), date_format)
-
-
-def generate_date_in_past(date_format: str, days: int = 0, hours: int = 0, minutes: int = 0):
-    """
-    Создает строку временем и датой в прошлом по указанному формату
-    :param hours:
-    :param minutes:
-    :param days:
-    :param date_format:
-    :return: datetime string
-    """
-    return datetime.strftime(datetime.now() - timedelta(days=days, hours=hours, minutes=minutes), date_format)
+def random_social_id() -> str:
+    """Generates random user social ID"""
+    return "id" + "".join(random.choice(string.digits) for _ in range(15))

@@ -1,14 +1,16 @@
-import re
 import glob
+import re
+from time import sleep
 from typing import Literal
 
 import allure
 import requests
-from time import sleep
 from selenium.webdriver.common.keys import Keys
+
 from pages.base_page import BasePage
+from settings import LOCAL_FILES_DIR, REMOTE_FILES_DIR, SELENOID_DOWNLOAD
 from tools.locator import Locator
-from settings import REMOTE_FILES_DIR, LOCAL_FILES_DIR, SELENOID_DOWNLOAD
+
 
 class BrowserMethods(BasePage):
     """
@@ -20,13 +22,13 @@ class BrowserMethods(BasePage):
     """
 
     def scroll_to_top(self) -> None:
-        self.browser.wd.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
+        self.browser.wd.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.HOME)
 
     """
     Working with tabs
     """
 
-    def open_new_tab(self, link: str = '') -> None:
+    def open_new_tab(self, link: str = "") -> None:
         self.browser.wd.execute_script(f"window.open('{link}','_blank')")
 
     def close_last_tab(self, back_to_tab: int = 0) -> None:
@@ -51,7 +53,7 @@ class BrowserMethods(BasePage):
     def get_session_id(self) -> str:
         return str(self.browser.wd.session_id)
 
-    def screenshots(self, name: str = 'screenshot') -> None:
+    def screenshots(self, name: str = "screenshot") -> None:
         allure.attach(self.browser.wd.get_screenshot_as_png(), name=name, attachment_type=allure.attachment_type.PNG)
 
     """
@@ -67,7 +69,7 @@ class BrowserMethods(BasePage):
             sleep(1)
             download_timer = False
             for file_name in glob.glob(REMOTE_FILES_DIR):
-                if file_name.endswith('.crdownload') or file_name.endswith('.part'):
+                if file_name.endswith(".crdownload") or file_name.endswith(".part"):
                     download_timer = True
             seconds += 1
         sleep(2)
@@ -80,22 +82,23 @@ class BrowserMethods(BasePage):
         self.browser.wd.get(f"file://{REMOTE_FILES_DIR}")
         self.wait_visible(Locator(xpath="//table/tbody[@id='tbody']"))
         download_files = len(self.find_all(Locator(xpath="//a[@class='icon file']")))
-        assert quantity_of_files == download_files, \
-            f"Expected quantity downloaded files '{quantity_of_files}' not equal found quantity '{download_files}'"
+        assert (
+            quantity_of_files == download_files
+        ), f"Expected quantity downloaded files '{quantity_of_files}' not equal found quantity '{download_files}'"
         self.close_last_tab()
 
     def check_downloaded_files(
-            self,
-            storage: Literal['local', 'chrome'],
-            file_name: str,
-            is_same: int | None = None,
-            storage_directory: str | None = None
+        self,
+        storage: Literal["local", "chrome"],
+        file_name: str,
+        is_same: int | None = None,
+        storage_directory: str | None = None,
     ):
         sleep(2)
 
-        if storage == 'local':
+        if storage == "local":
             storage_directory = f"/{LOCAL_FILES_DIR}"
-        elif storage == 'chrome':
+        elif storage == "chrome":
             storage_directory = REMOTE_FILES_DIR
 
         self.open_new_tab()
@@ -107,15 +110,15 @@ class BrowserMethods(BasePage):
             if file_name == "download":
                 same_file_name = file_name + f" ({is_same})"
             else:
-                same_file_name = re.sub(r'(?=[.,])(?=[^\s])', fr' ({is_same})', file_name)
+                same_file_name = re.sub(r"(?=[.,])(?=[^\s])", rf" ({is_same})", file_name)
 
             self.browser.asserts.assert_downloaded_file_present(
-                locator=Locator(xpath=f"//tbody[@id='tbody']//a[contains(text(), '{same_file_name}')]"),
-                retries=1)
+                locator=Locator(xpath=f"//tbody[@id='tbody']//a[contains(text(), '{same_file_name}')]"), retries=1
+            )
         else:
             self.browser.asserts.assert_downloaded_file_present(
-                locator=Locator(xpath=f"//tbody[@id='tbody']//a[contains(text(), '{file_name}')]"),
-                retries=1)
+                locator=Locator(xpath=f"//tbody[@id='tbody']//a[contains(text(), '{file_name}')]"), retries=1
+            )
 
         self.close_last_tab()
 

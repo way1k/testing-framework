@@ -70,7 +70,7 @@ test-bashorg:
     SCHEDULER: $SCHEDULER
   trigger:
     include:
-      - local: 'config/pipelines/.bashorg-test-ci.yml'
+      - local: 'pipelines/.bashorg-test-ci.yml'
 
 test-reqres:
   stage: downstream
@@ -90,7 +90,9 @@ test-reqres:
     SCHEDULER: $SCHEDULER
   trigger:
     include:
-      - local: 'config/pipelines/.reqres-test-ci.yml'
+      - local: 'pipelines/.reqres-test-ci.yml'
+
+### Markname jobs ###
 
 mark-names-launch:
   stage: downstream

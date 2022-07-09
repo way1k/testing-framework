@@ -4,7 +4,7 @@ from tools.locator import Locator
 class MainPageReqresLocators:
 
     """
-    Локаторы главной страницы
+    Locators for main page Reqres
     """
 
     PAGE = Locator(xpath="/html")

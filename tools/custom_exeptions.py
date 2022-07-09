@@ -1,6 +1,6 @@
 class CommonActionError(Exception):
     """
-    Общие ошибки, возникающие в UI и API
+    Common errors, appearing in UI and API
     """
 
     def __init__(self, value):
@@ -8,12 +8,12 @@ class CommonActionError(Exception):
         super().__init__()
 
     def __str__(self):
-        return "Общая ошибка"
+        return "Common error"
 
 
 class ExecuteSSHCommandError(Exception):
     """
-    Ошибки при выполнении команд по ssh
+    Error during execute command by ssh
     """
 
     def __init__(self, stderr_content):
@@ -21,4 +21,4 @@ class ExecuteSSHCommandError(Exception):
         super().__init__()
 
     def __str__(self):
-        return f"Получено сообщение {self.stderr_content}"
+        return f"Message received: {self.stderr_content}"

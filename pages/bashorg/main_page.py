@@ -1,14 +1,14 @@
-from pages.base_page import BasePage
 from locators.bashorg.main_page import MainPageBashLocators
+from pages.base_page import BasePage
 
 
 class MainPageBash(BasePage, MainPageBashLocators):
     """
-    Объект главной страницы
+    Main page object
     """
 
     """
-    Методы открытия страницы
+    Open page methods
     """
 
     def open_main_page(self):
@@ -17,14 +17,14 @@ class MainPageBash(BasePage, MainPageBashLocators):
         self.browser.asserts.assert_text_on_page("bashorg.org — Лучший Цитатник Рунета")
 
     """
-    Методы взаимодействия с верхним блоком меню
+    Interaction with upper block menu methods
     """
 
-    def select_type_quotes_in_upper_block(self, quotes_type: str = 'случайные'):
+    def select_type_quotes_in_upper_block(self, quotes_type: str = "случайные"):
         self.smart_click(self._generate_locator_type_quotes(quotes_type))
 
     """
-    Методы проверки элементов на странице
+    Check elements at page methods
     """
 
     def check_upper_block_menu(self):

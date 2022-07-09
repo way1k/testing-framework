@@ -1,42 +1,36 @@
 import os
-from requests import Session
 from logging import error as elog
+
+from requests import Session
 
 
 class AllureServer(object):
-
-    def __init__(self, url):
+    def __init__(self, url: str) -> None:
         self.url = url
         self._session = Session()
 
-    def send_results(self, file_path):
+    def send_results(self, file_path: str) -> None | str:
         if not os.path.isfile(file_path):
-            elog(f"ZIP-file по заданному пути не найден: '{file_path}'")
+            elog(f"ZIP-file was not found in the specified path: '{file_path}'")
 
         with open(file_path, "rb") as f:
-            r = self._session.post(
-                f"{self.url}/api/result",
-                files={
-                    "allureResults": f
-                }
-
-            )
+            r = self._session.post(f"{self.url}/api/result", files={"allureResults": f})
         if not r.ok:
-            elog(f"Результаты на сервер не отправлены. Invalid response: {r.text}")
+            elog(f"The results have not been sent to the server. Invalid response: {r.text}")
             return
         return r.json()["uuid"]
 
-    def get_build_num(self, path):
+    def get_build_num(self, path: str) -> None | int:
         r = self._session.get(
             f"{self.url}/api/report?path={path}",
         )
 
         if not r.ok:
-            elog(f"Не можем получить репорт по заданному пути: '{path}'. Invalid response: {r.text}")
+            elog(f"Can't get the report by the specified path: '{path}'. Invalid response: {r.text}")
             return
         return len(r.json()) + 1
 
-    def generate_report(self, res_uid, path):
+    def generate_report(self, res_uid: str, path: str) -> None | str:
         assert isinstance(path, str), f"Path must be str format, got {type(path)}"
 
         path_as_list = path.split("/")
@@ -44,18 +38,13 @@ class AllureServer(object):
         r = self._session.post(
             f"{self.url}/api/report",
             json={
-                "reportSpec": {
-                    "path": path_as_list,
-                    "executorInfo": {
-                        "buildName": f"#{path_as_list[-1]}"
-                    }
-                },
+                "reportSpec": {"path": path_as_list, "executorInfo": {"buildName": f"#{path_as_list[-1]}"}},
                 "results": [res_uid],
-                "deleteResults": True
-            }
+                "deleteResults": True,
+            },
         )
         if not r.ok:
-            elog(f"Не удалось сгенерировать репорт. Invalid response: {r.text}")
+            elog(f"Failed to generate report. Invalid response: {r.text}")
             return
 
         report_url = r.json()["url"]

@@ -1,25 +1,25 @@
 import glob
-import allure
-import pytest
 import logging
 import os.path
+from inspect import currentframe
+
+import allure
+import pytest
 import urllib3
+from _pytest.config import Config
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import SubRequest
 from _pytest.python import Function
 from _pytest.reports import TestReport
 from _pytest.runner import CallInfo
 from dotenv import load_dotenv
-from inspect import currentframe
-from tools.browser.browser_setup import Browser
-from api_methods.procedure_api import BackAPI
+
 from settings import CONFIG_DIR, LOCAL_FILES_DIR, PROJECT_DIR
+from tools.browser.browser_setup import Browser
+from tools.cfg_singleton import config_obj
+from tools.session_singleton import http_session
 
-
-pytest_plugins = [
-    "plugins.reporter.plugin",
-    "fixtures.platform_name_example.database"
-]
+pytest_plugins = ["fixtures.services", "plugins.reporter.plugin", "fixtures.service_name_example.database"]
 
 logging.getLogger("requests").setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.CRITICAL)
@@ -33,7 +33,7 @@ logging.captureWarnings(True)
 def platform(request: SubRequest) -> Browser:
     bash_url = os.environ.get("BASHORG_URL")
     reqres_url = os.environ.get("REQRES_URL")
-    module_name = str(currentframe().f_locals['request']).replace("<SubRequest \'platform\' for <Function ", "")[0:-2]
+    module_name = str(currentframe().f_locals["request"]).replace("<SubRequest 'platform' for <Function ", "")[0:-2]
     test_name = __get_test_name(module_name)
 
     browser = Browser(
@@ -54,7 +54,7 @@ def platform(request: SubRequest) -> Browser:
                 allure.attach(
                     body=browser.wd.get_screenshot_as_png(),
                     name=request.function.__name__,
-                    attachment_type=allure.attachment_type.PNG
+                    attachment_type=allure.attachment_type.PNG,
                 )
     except AttributeError:
         pass
@@ -62,31 +62,32 @@ def platform(request: SubRequest) -> Browser:
     browser.wd.quit()
 
 
-@pytest.fixture(scope="function")
-def api_reqres() -> BackAPI:
-    reqres_url = os.environ.get("REQRES_URL")
-    api = BackAPI(base_url=reqres_url)
-    yield api
-    api.client.close_session()
-
-
 @pytest.fixture(scope="session")
 def cleanup_tmp() -> None:
     directory = f"{LOCAL_FILES_DIR}/*"
     for clean_up in glob.glob(directory):
-        if not clean_up.endswith('.gitkeep'):
+        if not clean_up.endswith(".gitkeep"):
             os.remove(clean_up)
     yield
     for clean_up in glob.glob(directory):
-        if not clean_up.endswith('.gitkeep'):
+        if not clean_up.endswith(".gitkeep"):
             os.remove(clean_up)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def load_env(request: SubRequest) -> None:
-    environment = request.config.getoption("--env")
+def pytest_configure(config: Config) -> None:
+    environment = config.getoption("--env")
     dotenv_path = os.path.join(CONFIG_DIR, f".env.{environment}")
     load_dotenv(dotenv_path, override=True)
+
+    for key in os.environ:
+        if not hasattr(config_obj, key) or getattr(config_obj, key) != os.environ.get(key):
+            setattr(config_obj, key, os.environ.get(key))
+
+
+@pytest.fixture(scope="function", autouse=True)
+def close_session() -> None:
+    yield
+    http_session.close_session()
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -107,11 +108,11 @@ def traceback_on_failure(request: SubRequest):
     yield
     if request.node.rep_setup.failed:
         traceback = request.node.rep_setup.longreprtext
-        allure.attach(traceback, name='traceback', attachment_type=allure.attachment_type.TEXT)
+        allure.attach(traceback, name="traceback", attachment_type=allure.attachment_type.TEXT)
     elif request.node.rep_setup.passed:
         if request.node.rep_call.failed:
             traceback = request.node.rep_call.longreprtext
-            allure.attach(traceback, name='traceback', attachment_type=allure.attachment_type.TEXT)
+            allure.attach(traceback, name="traceback", attachment_type=allure.attachment_type.TEXT)
 
 
 def pytest_collection_modifyitems(items: list[Function]) -> None:
@@ -125,26 +126,26 @@ def pytest_collection_modifyitems(items: list[Function]) -> None:
 
         for mark in item.iter_markers(name="allure_label"):
 
-            if mark.kwargs == {'label_type': 'platform'}:
+            if mark.kwargs == {"label_type": "platform"}:
                 components = mark.args
                 for component in components:
                     item.add_marker(component.lower())
 
 
 def __get_test_name(file_name: str) -> str:
-    search_file = file_name + '.py'
+    search_file = file_name + ".py"
     for root, dirs, files in os.walk(f"{PROJECT_DIR}/tests"):
         if search_file in files:
-            with open(str(os.path.join(root, search_file)), "r", encoding='utf-8') as f:
+            with open(str(os.path.join(root, search_file)), "r", encoding="utf-8") as f:
                 lines = f.readlines()
             chains = [line for line in lines if line.startswith("@allure.title(")]
-            test_name = chains[0].replace('@allure.title("', '')[:-3]
-            return test_name + ' | ' + '\n' + search_file
+            test_name = chains[0].replace('@allure.title("', "")[:-3]
+            return test_name + " | " + "\n" + search_file
 
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--browser", action="store", default="local")
-    parser.addoption('--browser_version', action="store", default="101.0")
+    parser.addoption("--browser_version", action="store", default="101.0")
     parser.addoption("--env", action="store", default="dev")
     parser.addoption("--log_level", action="store", default="INFO")
     parser.addoption("--report", action="store", default="no")

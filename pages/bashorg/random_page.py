@@ -1,15 +1,16 @@
 import time
-from pages.base_page import BasePage
+
 from locators.bashorg.random_page import RandomPageBashLocators
+from pages.base_page import BasePage
 
 
 class RandomPageBash(BasePage, RandomPageBashLocators):
     """
-    Объект страницы случайных цитат
+    Page object for random quotes page
     """
 
     """
-    Методы открытия страницы
+    Open page methods
     """
 
     def open_random_page(self):
@@ -19,7 +20,7 @@ class RandomPageBash(BasePage, RandomPageBashLocators):
         self.browser.asserts.assert_url_contains("/random")
 
     """
-    Методы взаимодействия с элементами цитат
+    Interactions with quote elements methods
     """
 
     def get_actual_quote_rating(self, quote_number):
@@ -30,9 +31,9 @@ class RandomPageBash(BasePage, RandomPageBashLocators):
         self.smart_click(self._generate_locator_increase_rating(quote_number))
 
     """
-    Методы проверки элементов на странице
+    Methods for checking elements on a page
     """
-    
+
     def check_upper_block_menu(self):
         self.browser.asserts.assert_element_present(self.UPPER_MENU_BLOCK)
 
@@ -42,5 +43,6 @@ class RandomPageBash(BasePage, RandomPageBashLocators):
     def assert_increase_rating(self, rating_before, quote_number):
         time.sleep(1)
         rating_after = self.get_actual_quote_rating(quote_number)
-        assert int(rating_before) + 1 == int(rating_after), \
-            f"Ожидаемый рейтинг цитаты {int(rating_before) + 1} не равен актуальному {rating_after}"
+        assert int(rating_before) + 1 == int(
+            rating_after
+        ), f"Expected rating of quote {int(rating_before) + 1} not equal current {rating_after}"
