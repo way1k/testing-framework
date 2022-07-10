@@ -19,7 +19,7 @@ from tools.browser.browser_setup import Browser
 from tools.cfg_singleton import config_obj
 from tools.session_singleton import http_session
 
-pytest_plugins = ["fixtures.services", "plugins.reporter.plugin", "fixtures.service_name_example.database"]
+pytest_plugins = ["fixtures.services", "plugins.reporter_allure.plugin", "fixtures.service_name_example.database"]
 
 logging.getLogger("requests").setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.CRITICAL)
@@ -33,8 +33,7 @@ logging.captureWarnings(True)
 def platform(request: SubRequest) -> Browser:
     bash_url = os.environ.get("BASHORG_URL")
     reqres_url = os.environ.get("REQRES_URL")
-    module_name = str(currentframe().f_locals["request"]).replace("<SubRequest 'platform' for <Function ", "")[0:-2]
-    test_name = __get_test_name(module_name)
+    test_name = __get_test_name(request)
 
     browser = Browser(
         browser=request.config.getoption("--browser"),
@@ -132,20 +131,26 @@ def pytest_collection_modifyitems(items: list[Function]) -> None:
                     item.add_marker(component.lower())
 
 
-def __get_test_name(file_name: str) -> str:
-    search_file = file_name + ".py"
+def __get_test_name(request: SubRequest) -> str:
+    test_func_name = request.node.config.args[0].split("::")[-1]
+    search_file = str(request.fspath).split("/")[-1]
     for root, dirs, files in os.walk(f"{PROJECT_DIR}/tests"):
         if search_file in files:
             with open(str(os.path.join(root, search_file)), "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            chains = [line for line in lines if line.startswith("@allure.title(")]
-            test_name = chains[0].replace('@allure.title("', "")[:-3]
+                lines = list(reversed(f.readlines()))
+            for index, line in enumerate(lines):
+                if f"def {test_func_name}" in line:
+                    lines = lines[index:]
+                    break
+            for line in lines:
+                if line.startswith("@allure.title("):
+                    test_name = line.replace('@allure.title("', "")[:-3]
             return test_name + " | " + "\n" + search_file
 
 
 def pytest_addoption(parser: Parser) -> None:
-    parser.addoption("--browser", action="store", default="local")
+    parser.addoption("--browser", action="store", default="chrome")
     parser.addoption("--browser_version", action="store", default="101.0")
     parser.addoption("--env", action="store", default="dev")
-    parser.addoption("--log_level", action="store", default="INFO")
-    parser.addoption("--report", action="store", default="no")
+    parser.addoption("--log_level", action="store", default="DEBUG")
+    parser.addoption("--report", action="store", default="enable")

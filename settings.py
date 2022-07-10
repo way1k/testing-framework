@@ -11,7 +11,8 @@ REMOTE_FILES_DIR = "/home/selenium/Downloads/"
 TEST_PDF_FILE = os.path.join(PROJECT_DIR, "files/etc/pdf_document.pdf")
 TEST_TXT_FILE = os.path.join(PROJECT_DIR, "files/etc/text_file.txt")
 
-ALLURE_REPORT = {"results_dir": ALLURE_FILES_DIR, "url": "http://31.207.44.170:8081"}
+ALLURE_SERVER = {"results_dir": ALLURE_FILES_DIR, "url": "http://31.207.44.170:8081"}
+ALLURE_DOCKER_UI = {"results_dir": ALLURE_FILES_DIR, "url": "http://31.207.44.170:5050", "project_id": "automation"}
 
 SELENOID_ENDPOINT = "http://31.207.44.170:4444/wd/hub"
 SELENOID_DOWNLOAD = "http://31.207.44.170:4444/download/"

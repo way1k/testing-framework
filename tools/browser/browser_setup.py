@@ -38,7 +38,7 @@ class Browser:
         driver = None
         capabilities = {
             "browserName": browser,
-            "version": version,
+            "browserVersion": version,
             "enableVNC": True,
             "enableVideo": False,
         }
