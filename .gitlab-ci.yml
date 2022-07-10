@@ -13,7 +13,7 @@ validate-requirements:
   stage: validate
   tags:
     - common-255
-  image: python:3.8.12-buster
+  image: python:3.10.5-buster
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "api" || $CI_PIPELINE_SOURCE == "trigger"'
       when: never
@@ -116,4 +116,4 @@ mark-names-launch:
     SCHEDULER: $SCHEDULER
   script:
     - echo $MARK_NAMES
-    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes --log_level=DEBUG
+    - pytest -m "$MARK_NAMES" --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=enable --log_level=DEBUG

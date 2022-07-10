@@ -18,9 +18,9 @@ stages:
 api-reqres:
   extends: .regular-runs-base
   script:
-    - pytest -v tests/reqres/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes --log_level=DEBUG
+    - pytest -v tests/reqres/api --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=enable --log_level=DEBUG
 
 ui-reqres:
   extends: .regular-runs-base
   script:
-    - pytest -v tests/reqres/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=yes
+    - pytest -v tests/reqres/ui --env=$ENVIRONMENT --browser=$BROWSER --browser_version=$BROWSER_VERSION --report=enable
