@@ -2,13 +2,12 @@
 
 ## Common info:
 
-- Stack: `python`+`pytest`+`selenium`+`docker`+`selenoid-ui`+`allure-server`
+- Stack: `python`+`pytest`+`selenium`+`docker`+`selenoid-ui`+`allure-server`+`allure-docker-ui-service`
 - Ready-made solution for `ui/api` testing
-- Implemented `selenium` wrapper, integration with `allure-server` and `selenoid/ggr`
-- Various clients are implemented, such as `http-client`, `orm`, `imap`, `ssh`, `greylog`
-- Tests run in parallel, each in its own container
-- Remote launch tests by `gitlab-ci`
-
+- Implemented `selenium` wrapper, integration with `allure-server`, `allure-docker-ui-service` and `selenoid/ggr`
+- Various clients are implemented, such as `http-client`, `mysql`, `postgresql`, `imap`, `ssh`
+- Tests run in parallel, each in its own container for different browser version/kind
+- Remote launch tests by `gitlab-ci` (easy-implement for `azure-devops`)
 
 ## Environment requirements:
 
