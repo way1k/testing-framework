@@ -149,8 +149,8 @@ def __get_test_name(request: SubRequest) -> str:
 
 
 def pytest_addoption(parser: Parser) -> None:
-    parser.addoption("--browser", action="store", default="chrome")
+    parser.addoption("--browser", action="store", default="local")
     parser.addoption("--browser_version", action="store", default="101.0")
     parser.addoption("--env", action="store", default="dev")
     parser.addoption("--log_level", action="store", default="DEBUG")
-    parser.addoption("--report", action="store", default="enable")
+    parser.addoption("--report", action="store", default="disable")

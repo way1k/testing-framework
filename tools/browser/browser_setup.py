@@ -39,13 +39,15 @@ class Browser:
         capabilities = {
             "browserName": browser,
             "browserVersion": version,
-            "enableVNC": True,
-            "enableVideo": False,
+            "selenoid:options": {
+                "enableVNC": True,
+                "enableVideo": False,
+                "name": test_name,
+            },
         }
 
         if capabilities["browserName"] == "local":
             chrome_local_options = ChromeOptions()
-            chrome_local_options.set_capability("name", test_name)
             chrome_local_options.set_capability("acceptInsecureCerts", True)
             chrome_local_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
@@ -67,7 +69,6 @@ class Browser:
 
         elif capabilities["browserName"] == "chrome":
             chrome_remote_options = ChromeOptions()
-            chrome_remote_options.set_capability("name", test_name)
             chrome_remote_options.add_argument("--disable-gpu")
             chrome_remote_options.add_argument("--no-sandbox")
             chrome_remote_options.add_argument("--disable-setuid-sandbox")
@@ -101,8 +102,6 @@ class Browser:
         elif capabilities["browserName"] == "firefox":
             firefox_remote_options = FirefoxOptions()
             firefox_remote_options.set_capability("acceptInsecureCerts", True)
-            firefox_remote_options.set_capability("name", test_name)
-
             firefox_remote_profile = FirefoxProfile()
 
             driver = webdriver.Remote(

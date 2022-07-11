@@ -14,5 +14,8 @@ TEST_TXT_FILE = os.path.join(PROJECT_DIR, "files/etc/text_file.txt")
 ALLURE_SERVER = {"results_dir": ALLURE_FILES_DIR, "url": "http://31.207.44.170:8081"}
 ALLURE_DOCKER_UI = {"results_dir": ALLURE_FILES_DIR, "url": "http://31.207.44.170:5050", "project_id": "automation"}
 
-SELENOID_ENDPOINT = "http://31.207.44.170:4444/wd/hub"
+SELENOID_ENDPOINT = "http://vsokolov-user@31.207.44.170:4444/wd/hub"
 SELENOID_DOWNLOAD = "http://31.207.44.170:4444/download/"
+#
+# SELENOID_ENDPOINT = "http://143.47.227.244:4444/wd/hub"
+# SELENOID_DOWNLOAD = "http://143.47.227.244:4444/download/"
