@@ -4,11 +4,11 @@ from pages.base_page import BasePage
 
 class MainPageReqres(BasePage, MainPageReqresLocators):
     """
-    Объект главной страницы REQRES
+    Page object REQRES
     """
 
     """
-    Методы открытия страницы
+    Open page methods
     """
 
     def open_main_page(self):
@@ -17,7 +17,7 @@ class MainPageReqres(BasePage, MainPageReqresLocators):
         self.browser.asserts.assert_text_on_page("Test your front-end against a real API")
 
     """
-    Методы взаимодействия с блоком запросов
+    Interactions with block of requests methods
     """
 
     def click_button_user_not_found(self):
@@ -30,13 +30,11 @@ class MainPageReqres(BasePage, MainPageReqresLocators):
         self.smart_click(self.LIST_USERS)
 
     """
-    Методы проверки элементов на странице
+    Methods for checking elements on a page
     """
 
     def check_url_in_request_block(self, expected_url: str):
-        actual_url = self.get_element_attribute(
-            locator=self.URL_IN_REQUEST_BLOCK,
-            attribute="href"
-        )
-        assert actual_url == (self.browser.reqres_url + expected_url), \
-            f"Ожидаемый url {self.browser.reqres_url + expected_url}, не равен актуальному {actual_url}"
+        actual_url = self.get_element_attribute(locator=self.URL_IN_REQUEST_BLOCK, attribute="href")
+        assert actual_url == (
+            self.browser.reqres_url + expected_url
+        ), f"Ожидаемый url {self.browser.reqres_url + expected_url}, не равен актуальному {actual_url}"

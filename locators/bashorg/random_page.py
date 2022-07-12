@@ -3,8 +3,9 @@ from tools.locator import Locator
 
 class RandomPageBashLocators:
     """
-    Локаторы страницы рандомных цитат
+    Locators for random quotes page
     """
+
     PAGE = Locator(xpath="/html")
     UPPER_MENU_BLOCK = Locator(xpath="(//div[@class='menu'])[1]")
     DOWN_MENU_BLOCK = Locator(xpath="(//div[@class='menu'])[2]")
@@ -16,4 +17,3 @@ class RandomPageBashLocators:
     @staticmethod
     def _generate_locator_increase_rating(quote_number):
         return Locator(xpath=f"(//span[contains(@id, 'result')])[{quote_number}]/preceding-sibling::a")
-

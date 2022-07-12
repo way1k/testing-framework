@@ -3,7 +3,7 @@ from tools.locator import Locator
 
 class LoginPageLocators:
     """
-    Локаторы страницы логина для Фабриканта
+    Locators for login page Bash
     """
-    PAGE = Locator(xpath="/html")
 
+    PAGE = Locator(xpath="/html")

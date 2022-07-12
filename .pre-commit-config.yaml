@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-merge-conflict
+        description: 'Checking files containing merge conflict strings'
+      - id: end-of-file-fixer
+        description: 'Guarantees that the file is either empty or ends with one new line (the file will be changed)'
+      - id: requirements-txt-fixer
+        description: 'Sorts the entries in the requirements.txt file (file will be changed)'
+      - id: trailing-whitespace
+        description: 'Cuts end spaces (file will be changed)Cuts end spaces (file will be changed)'
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
+        description: 'Checks typical spelling mistakes in text files'
+        args: [ -L exeptions]
+        exclude: ^(azure-pipelines.yml|azure-pipelines-previously.yml)
+
+  - repo: https://github.com/psf/black
+    rev: 22.6.0
+    hooks:
+      - id: black
+        language_version: python3.10
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort (python)
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        entry: pflake8
+        additional_dependencies: [ pyproject-flake8 ]
