@@ -1,5 +1,4 @@
 allure-pytest==2.9.45
-# allure-python-commons==2.9.45
 autodoc_pydantic==1.7.2
 black==22.6.0
 email-validator==1.2.1
